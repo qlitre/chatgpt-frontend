@@ -2,7 +2,7 @@
 import { Ref } from 'vue'
 
 definePageMeta({
-  layout: false
+  layout: 'account-layout'
 });
 
 const isSuccess: Ref<boolean> = ref(false);
@@ -37,29 +37,23 @@ const submitResetPasswordConfirmForm = async () => {
 </script>
 
 <template>
-  <v-container class="mt-32">
-    <v-row class="justify-center">
-      <v-col cols="12" md="6" lg="4">
-        <h1 class="text-center font-weight-bold mb-5">Reset Password</h1>
-        <v-form ref="form" @submit.prevent="submitResetPasswordConfirmForm">
-          <v-text-field label="Password" name="password" v-model="newPassword" type="password"
-            :rules="[v => !!v || 'Password is required']" placeholder="Enter your password..." required></v-text-field>
-          <v-text-field label="Confirm Password" name="confirm_password" v-model="confirmPassword" type="password"
-            :rules="[v => !!v || 'Confirm Password is required', v => v === newPassword || 'Passwords must match']"
-            placeholder="Re-enter your password..." required></v-text-field>
-          <div class="text-center mt-8">
-            <v-btn color="primary" @click="submitResetPasswordConfirmForm">パスワード変更</v-btn>
-          </div>
-        </v-form>
-        <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
-          {{ serverError.detail }}
-        </v-alert>
-        <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
-          パスワードのリセットが完了しました。5秒後にログインページに移動します。
-        </v-alert>
-      </v-col>
-    </v-row>
-  </v-container>
+  <h1 class="text-center font-weight-bold mb-5">Reset Password</h1>
+  <v-form ref="form" @submit.prevent="submitResetPasswordConfirmForm">
+    <v-text-field label="Password" name="password" v-model="newPassword" type="password"
+      :rules="[v => !!v || 'Password is required']" placeholder="Enter your password..." required></v-text-field>
+    <v-text-field label="Confirm Password" name="confirm_password" v-model="confirmPassword" type="password"
+      :rules="[v => !!v || 'Confirm Password is required', v => v === newPassword || 'Passwords must match']"
+      placeholder="Re-enter your password..." required></v-text-field>
+    <div class="text-center mt-8">
+      <v-btn color="primary" @click="submitResetPasswordConfirmForm">パスワード変更</v-btn>
+    </div>
+  </v-form>
+  <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
+    {{ serverError.detail }}
+  </v-alert>
+  <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
+    パスワードのリセットが完了しました。5秒後にログインページに移動します。
+  </v-alert>
 </template>
 
 <style lang="css" scoped></style>
