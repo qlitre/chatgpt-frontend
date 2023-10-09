@@ -544,6 +544,106 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.0.0.tgz#f22824caff3ae506b18207bad4126dbc6ccdb6b8"
   integrity sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==
 
+"@formkit/core@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/core/-/core-1.2.2.tgz#4461b416a678b32ccc37e2f2268615460850ad6a"
+  integrity sha512-aJoZW7ZWXdwVBdw2acv62aPaecZ44PnK9eyp/hdMrMxT9xW3I84MytCdII8DYpxLmloaE+NoUANZIvlkTRGlHg==
+  dependencies:
+    "@formkit/utils" "1.2.2"
+
+"@formkit/dev@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/dev/-/dev-1.2.2.tgz#43ad81a0096d0e9e4c39b3c61c58277756de4444"
+  integrity sha512-C3KzolVAQE732W2aCKgLDXyhnxCNFtWQEPvs677ZAEciMBrZEgU6ZDleb8XTX7FIF4m4PWszfheQIbdy4p0K+Q==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/utils" "1.2.2"
+
+"@formkit/i18n@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/i18n/-/i18n-1.2.2.tgz#29aede7d91b2a1ccc6fdcc716aee431fb98de694"
+  integrity sha512-HABPlja6xQk0JztvQnbnhVzFqhgM6XqlqOzGNOtCOcOpMUSY3okT7NSMPTK/Zq4Yq4XQmbJgi/toGfYakqLfhA==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/utils" "1.2.2"
+    "@formkit/validation" "1.2.2"
+
+"@formkit/inputs@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/inputs/-/inputs-1.2.2.tgz#5515c149969412f3472b6977b8d4e5b6447c5f1f"
+  integrity sha512-apVGQ+9eHRD8qi9h0LRvaI9UrumDUwXQSw3gMQfDvfCjkqZXY4+m/WS3FraqHH4Mqs7cjryYRYrHYpAaVQtqKQ==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/utils" "1.2.2"
+
+"@formkit/nuxt@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/nuxt/-/nuxt-1.2.2.tgz#dd6d4e80c77a2a352c512db2c32058083e8f957d"
+  integrity sha512-qrYex9vhpnpMP32T1E9ZbcRPZIRzGeY0f8bgMUaY3v8DKcEN9okSDYKu8poGUqB5W6wjxgaXvXwhbaDb/Njspw==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/i18n" "1.2.2"
+    "@formkit/vue" "1.2.2"
+    "@nuxt/kit" "^3.7.4"
+    chokidar "^3.5.3"
+    nuxi "^3.9.0"
+    pathe "^1.1.1"
+    unplugin-formkit "^0.2.7"
+
+"@formkit/observer@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/observer/-/observer-1.2.2.tgz#dd1ef35cb5a01a04cb86cec32e0218688a4acc3b"
+  integrity sha512-D9bVRfs2FEuzuIdC2BFSpayV4xyIexbRc2JTLkdwgsx9rROz9bh67M+VZ7zmrONuikgrD+dfaopIXK5sRZPGSQ==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/utils" "1.2.2"
+
+"@formkit/rules@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/rules/-/rules-1.2.2.tgz#0778c856aae5397a1ae3fad27f5862cdf7ae7ee3"
+  integrity sha512-WfDZfDDuX9lAyvCvxLwTeszQNd59Ztnyxx6zjRvzF6zHMD4g5swb3Jv6jy0Jwic0nl4+04IEhpBM4Cl5kQuAvA==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/utils" "1.2.2"
+    "@formkit/validation" "1.2.2"
+
+"@formkit/themes@1.2.2", "@formkit/themes@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/themes/-/themes-1.2.2.tgz#9a4e7f6a6c9efbddc035cd8ea72a377f276dcb22"
+  integrity sha512-YxNmReXkvuF9OP6wAHVyJvTZ+hd+zRfOyTjie75fQ1EkWCjcn2jk+DCY4U+IkgOnq6A/vcKjP5vyuQqsglUgAA==
+  dependencies:
+    "@formkit/core" "1.2.2"
+
+"@formkit/utils@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/utils/-/utils-1.2.2.tgz#67687119ec747077890b399541058388cd5f3098"
+  integrity sha512-4EGm4nfZGSJik0QRAEybxO52F3QhbOfX/KgtWfB3/dDUEOCx5RWDxIs/CU2yI4bceDl2aK8l/yDYwCYK9SO5MA==
+
+"@formkit/validation@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/validation/-/validation-1.2.2.tgz#e9c2a07ae0e76c14a1b276b30d61bbf62a41ede7"
+  integrity sha512-jUfEjh3HAWlPmcuI+c7ullWKbm3oIRlQvbqN1r2GDqMWWLZ47+k6PVELV/eU7gxrF0mpQcQY5r8zvA1IFocCGA==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/observer" "1.2.2"
+    "@formkit/utils" "1.2.2"
+
+"@formkit/vue@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@formkit/vue/-/vue-1.2.2.tgz#be4ba201307e7d4e7e68dffa554031f3307cb720"
+  integrity sha512-UH7CrEfsj1otO+EMgLYFWsLp1A8s3GYiRik3YPII6sVuImXYuLCtz++oT3JrnM5hmUJWmEjxZoi5gRYJzxa0ow==
+  dependencies:
+    "@formkit/core" "1.2.2"
+    "@formkit/dev" "1.2.2"
+    "@formkit/i18n" "1.2.2"
+    "@formkit/inputs" "1.2.2"
+    "@formkit/observer" "1.2.2"
+    "@formkit/rules" "1.2.2"
+    "@formkit/themes" "1.2.2"
+    "@formkit/utils" "1.2.2"
+    "@formkit/validation" "1.2.2"
+    vue "^3.3.4"
+
 "@ioredis/commands@^1.1.1":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
@@ -804,7 +904,7 @@
     which "^3.0.1"
     ws "^8.14.2"
 
-"@nuxt/kit@3.7.4", "@nuxt/kit@^3.7.4":
+"@nuxt/kit@3.7.4", "@nuxt/kit@^3.5.0", "@nuxt/kit@^3.7.3", "@nuxt/kit@^3.7.4":
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.7.4.tgz#31c0bd57397cc56a1098af5d6504353cc2e855a2"
   integrity sha512-/S5abZL62BITCvC/TY3KWA6N721U1Osln3cQdBb56XHIeafZCBVqTi92Xb0o7ovl72mMRhrKwRu7elzvz9oT/g==
@@ -1005,6 +1105,23 @@
     "@parcel/watcher-win32-arm64" "2.3.0"
     "@parcel/watcher-win32-ia32" "2.3.0"
     "@parcel/watcher-win32-x64" "2.3.0"
+
+"@pinia-plugin-persistedstate/nuxt@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@pinia-plugin-persistedstate/nuxt/-/nuxt-1.1.2.tgz#26a34fd0367516c3c7c17b8fbd237789ce99b393"
+  integrity sha512-3deRNiIlFoFGO/K8Sz+yc53ayMzElR8ack7RnGka80zBgp6Fs9GWjoLJiy+ToIc7qVa6wrQcoLDsxcnvzX4T0g==
+  dependencies:
+    "@nuxt/kit" "^3.7.3"
+    defu "^6.1.2"
+    pinia-plugin-persistedstate ">=3.2.0"
+
+"@pinia/nuxt@^0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@pinia/nuxt/-/nuxt-0.4.11.tgz#1b3f728ae112d45deff5971376e05b8a8d64f720"
+  integrity sha512-bhuNFngJpmBCdAqWguezNJ/oJFR7wvKieqiZrmmdmPR07XjsidAw8RLXHMZE9kUm32M9E6T057OBbG/22jERTg==
+  dependencies:
+    "@nuxt/kit" "^3.5.0"
+    pinia ">=2.1.0"
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -3185,12 +3302,12 @@ kolorist@^1.7.0:
   integrity sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==
 
 launch-editor@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/launch-editor/-/launch-editor-2.6.0.tgz#4c0c1a6ac126c572bd9ff9a30da1d2cae66defd7"
-  integrity sha512-JpDCcQnyAAzZZaZ7vEiSqL690w7dAEyLao+KC96zBplnYbJS7TYNjvM3M7y3dGz+v7aIsJk3hllWuc0kWAjyRQ==
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/launch-editor/-/launch-editor-2.6.1.tgz#f259c9ef95cbc9425620bbbd14b468fcdb4ffe3c"
+  integrity sha512-eB/uXmFVpY4zezmGp5XtU21kwo7GBbKB+EQ+UZeWtGb9yAM5xt/Evk+lYH3eRNAtId+ej4u7TYPFZ07w4s7rRw==
   dependencies:
     picocolors "^1.0.0"
-    shell-quote "^1.7.3"
+    shell-quote "^1.8.1"
 
 lazystream@^1.0.0:
   version "1.0.1"
@@ -4141,6 +4258,19 @@ pify@^2.3.0:
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
   integrity sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==
 
+pinia-plugin-persistedstate@>=3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.2.0.tgz#9932ca2ae88aa6c0d6763bebc6447d7bd1f097d0"
+  integrity sha512-tZbNGf2vjAQcIm7alK40sE51Qu/m9oWr+rEgNm/2AWr1huFxj72CjvpQcIQzMknDBJEkQznCLAGtJTIcLKrKdw==
+
+pinia@>=2.1.0, pinia@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.1.6.tgz#e88959f14b61c4debd9c42d0c9944e2875cbe0fa"
+  integrity sha512-bIU6QuE5qZviMmct5XwCesXelb5VavdOWKWaB17ggk++NUwQWWbP5YnsONTk3b752QkW9sACiR81rorpeOMSvQ==
+  dependencies:
+    "@vue/devtools-api" "^6.5.0"
+    vue-demi ">=0.14.5"
+
 pkg-dir@^4.1.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-4.2.0.tgz#f099133df7ede422e81d1d8448270eeb3e4261f3"
@@ -4729,7 +4859,7 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shell-quote@^1.7.3:
+shell-quote@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.8.1.tgz#6dbf4db75515ad5bac63b4f1894c3a154c766680"
   integrity sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==
@@ -5195,6 +5325,14 @@ universalify@^2.0.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
   integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
 
+unplugin-formkit@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/unplugin-formkit/-/unplugin-formkit-0.2.7.tgz#c372f5679ed00447426998f746e520f50b0f4757"
+  integrity sha512-2Ea5CyEZ2rwjSpx6maweyzFUsV1M/6CiACXHkz4Jv2G32SI4jq58stU7ADWSqrIKgjJE0bllyUx25lpj6ry9gA==
+  dependencies:
+    pathe "^1.1.1"
+    unplugin "^1.4.0"
+
 unplugin-vue-router@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/unplugin-vue-router/-/unplugin-vue-router-0.7.0.tgz#27bd250c7dc698366cce70c5b72b97c3b3766c26"
@@ -5214,7 +5352,7 @@ unplugin-vue-router@^0.7.0:
     unplugin "^1.5.0"
     yaml "^2.3.2"
 
-unplugin@^1.3.1, unplugin@^1.5.0:
+unplugin@^1.3.1, unplugin@^1.4.0, unplugin@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/unplugin/-/unplugin-1.5.0.tgz#8938ae84defe62afc7757df9ca05d27160f6c20c"
   integrity sha512-9ZdRwbh/4gcm1JTOkp9lAkIDrtOyOxgHmY7cjuwI8L/2RTikMcVG25GsZwNAgRuap3iDw2jeq7eoqtAsz5rW3A==
@@ -5445,6 +5583,11 @@ vue-bundle-renderer@^2.0.0:
   integrity sha512-oYATTQyh8XVkUWe2kaKxhxKVuuzK2Qcehe+yr3bGiaQAhK3ry2kYE4FWOfL+KO3hVFwCdLmzDQTzYhTi9C+R2A==
   dependencies:
     ufo "^1.2.0"
+
+vue-demi@>=0.14.5:
+  version "0.14.6"
+  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.6.tgz#dc706582851dc1cdc17a0054f4fec2eb6df74c92"
+  integrity sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==
 
 vue-devtools-stub@^0.1.0:
   version "0.1.0"

@@ -3,7 +3,23 @@ import vuetify from 'vite-plugin-vuetify'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   srcDir: 'src/',
-  devtools: { enabled: true },
+  routeRules: {
+    // Render these routes on the client (SPA)
+    // If i make these route ssr false then it will fetch data on page reload else it wont
+    '/account/**': { ssr: false },
+    '/chat/**': { ssr: false },
+  },
+  modules: [
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+    '@formkit/nuxt',
+  ],
+  //  // To fix samesite console error
+  //  piniaPersistedstate: {
+  //   cookieOptions: {
+  //     sameSite: "strict",
+  //   },
+  // },
   build: {
     transpile: ['vuetify'],
   },
