@@ -21,6 +21,7 @@
   "dependencies": {
     "@formkit/nuxt": "^1.2.2",
     "@formkit/themes": "^1.2.2",
+    "@mdi/js": "^7.3.67",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.2",
     "@pinia/nuxt": "^0.4.11",
     "pinia": "^2.1.6"

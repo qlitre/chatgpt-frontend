@@ -1,8 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-const drawer = ref(false);
-const route = useRoute();
 
+const drawer = ref(false);
 
 </script>
 
@@ -10,12 +8,15 @@ const route = useRoute();
   <v-app>
     <!-- sidebar-->
     <v-navigation-drawer v-model="drawer" color="grey-darken-4">
-      <div class="text-center">
-        <v-btn variant="outlined" color="white" class="mt-2" width="200" href="/chat">新しいチャット</v-btn>
+      <div class="text-center sticky mt-2">
+        <v-btn variant="outlined" color="white" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
       </div>
+      <v-divider></v-divider>
       <Conversations />
       <template v-slot:append>
-        <UserMenu />
+        <div class="mb-2">
+          <UserMenu />
+        </div>
       </template>
     </v-navigation-drawer>
     <!-- header -->

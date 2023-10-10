@@ -1,17 +1,22 @@
 import { useAuthStore } from "~/stores/auth"
 import { useUserStore } from "~/stores/user"
+import type { CheckAuthResponse } from "~/types/account"
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const authStore = useAuthStore()
   const userStore = useUserStore()
   const baseUrl = "http://localhost:8000/api/account/"
   const csrfToken = useCookie('csrftoken')
-  const response = await $fetch(baseUrl + 'checkauth/', {
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  if (csrfToken?.value) {
+    headers['X-CSRFToken'] = csrfToken.value;
+  }
+  const response: CheckAuthResponse = await $fetch(baseUrl + 'checkauth/', {
     method: "GET",
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken.value,
-    },
+    headers: headers,
     credentials: 'include',
   })
   if (!response) {

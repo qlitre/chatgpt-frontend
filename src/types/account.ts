@@ -4,3 +4,7 @@ export type User = {
     email?: string;
     is_staff?: boolean;
 }
+
+export type CheckAuthResponse = {
+    isAuthenticated: boolean;
+}

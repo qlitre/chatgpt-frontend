@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+
 import type { Conversation } from '../types/chat';
 
 const response = ref<Conversation[]>([]);
@@ -7,7 +7,7 @@ const response = ref<Conversation[]>([]);
 try {
     const res = await useGetConversationList();
     if (res) {
-        response.value = res;
+        response.value = res.results;
     }
 } catch (error) {
     console.error("APIリクエストに失敗しました:", error);
@@ -20,7 +20,7 @@ watch(() => route.params, async () => {
     try {
         const res = await useGetConversationList();
         if (res) {
-            response.value = res;
+            response.value = res.results;
         }
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);

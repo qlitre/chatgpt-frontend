@@ -1,5 +1,5 @@
 import { useUserStore } from "@/stores/user";
-import type { Conversation, Message } from '../types/chat';
+import type { Conversation, Message, ConversationListResponse } from '../types/chat';
 
 const getUserIdFromStore = () => {
     const userStore = useUserStore();
@@ -16,7 +16,7 @@ export const useGetConversationList = async () => {
     const userId = getUserIdFromStore();
     if (!userId) return;
     const body = { 'user_id': userId }
-    const { data } = await useFetch<Conversation[]>(url, { params: body })
+    const { data } = await useFetch<ConversationListResponse>(url, { params: body })
     return data.value
 }
 

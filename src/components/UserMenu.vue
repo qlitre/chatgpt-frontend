@@ -2,6 +2,7 @@
 import { mergeProps } from 'vue'
 import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
+
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const onLogout = async () => {

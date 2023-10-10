@@ -36,7 +36,7 @@ async function addPrompt() {
 </script>
 
 <template>
-    <v-container>
+    <v-container class="top-container">
         <v-list>
             <v-list-item v-for="item in response" :key="item.id">
                 <!-- ボットのメッセージ -->
@@ -45,9 +45,24 @@ async function addPrompt() {
                 <v-card :text="item.message" variant="outlined" v-if="!item.is_bot"></v-card>
             </v-list-item>
         </v-list>
-        <v-divider></v-divider>
-
-        <v-textarea v-model="prompt" auto-grow label="テキストを入力" rows="2" class="custom-textarea"></v-textarea>
-        <v-btn :disabled="!prompt" variant="outlined" color="primary" @click="addPrompt()" class="inside-btn">SEND</v-btn>
+        <div class="prompt-box">
+            <v-textarea v-model="prompt" auto-grow placeholder="メッセージを送信" rows="1" bg-color="white" density="compact"
+                variant="solo" append-inner-icon="mdi-send"></v-textarea>
+            <v-btn :disabled="!prompt" class="abs" color="primary" @click="addPrompt()">SEND</v-btn>
+        </div>
     </v-container>
 </template>
+
+<style scoped>
+.top-container {
+    position: relative;
+}
+
+.prompt-box {
+    padding-top: 30px;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+</style>
