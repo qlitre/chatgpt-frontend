@@ -6,13 +6,22 @@ definePageMeta({
 });
 
 const response = ref<Message[]>([]);
-const prompt = ref("")
+const prompt = ref("");
+const loading = ref(false);
+// ChatGPTと通信中かどうか
+const isCommunicating = ref(false);
+
 async function addPrompt() {
+    isCommunicating.value = true;
     try {
-        const res = await useAddConversation(prompt.value);
+        const tmp = { is_bot: false, message: prompt.value }
+        const _prompt = prompt.value
+        prompt.value = ""
+        response.value.push(tmp)
+        loading.value = true;
+        const res = await useAddConversation(_prompt);
+        loading.value = false;
         if (res) {
-            const newMessage = res.new_prompt
-            response.value.push(newMessage)
             const streamMessage = res.new_ai_res.message
             // 一旦空にして追加
             const aiResponse = res.new_ai_res
@@ -25,14 +34,21 @@ async function addPrompt() {
                 response.value[lst].message += s;
             }
         }
-        prompt.value = "";
         const topicId = res?.conversation.id
         await navigateTo(`/chat/conversation/${topicId}`, { replace: false });
 
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
     }
+    isCommunicating.value = false;
 }
+
+function canSend() {
+    if (prompt.value.length == 0) return false
+    if (isCommunicating.value) return false
+    return true
+}
+
 </script>
 
 <template>
@@ -44,11 +60,13 @@ async function addPrompt() {
                 <!-- ユーザーのメッセージ -->
                 <v-card :text="item.message" variant="outlined" v-if="!item.is_bot"></v-card>
             </v-list-item>
+            <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
+                height="6"></v-progress-linear>
         </v-list>
         <div class="prompt-box">
             <v-textarea v-model="prompt" auto-grow placeholder="メッセージを送信" rows="1" bg-color="white" density="compact"
-                variant="solo" append-inner-icon="mdi-send"></v-textarea>
-            <v-btn :disabled="!prompt" class="abs" color="primary" @click="addPrompt()">SEND</v-btn>
+                variant="solo" append-inner-icon="mdi-magnify"></v-textarea>
+            <v-btn :disabled="!canSend()" class="abs" color="primary" @click="addPrompt()">SEND</v-btn>
         </div>
     </v-container>
 </template>

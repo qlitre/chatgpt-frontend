@@ -6,21 +6,26 @@ const route = useRoute();
 const conversationID = String(route.params.id);
 const response = ref<Message[]>([]);
 const prompt = ref("")
-onMounted(async () => {
-    try {
-        const res = await useGetMessageList(conversationID);
-        if (res) {
-            response.value = res;
-        }
-    } catch (error) {
-        console.error("APIリクエストに失敗しました:", error);
+const loading = ref(false);
+// ChatGPTと通信中かどうか
+const isCommunicating = ref(false);
+
+try {
+    const res = await useGetMessageList(conversationID);
+    if (res) {
+        response.value = res;
     }
-});
+} catch (error) {
+    console.error("APIリクエストに失敗しました:", error);
+}
 
 async function addPrompt() {
+    isCommunicating.value = true;
+    const _prompt = prompt.value
+    prompt.value = ""
     // promptの内容を追加
     try {
-        const res = await useAddPrompt(conversationID, prompt.value);
+        const res = await useAddPrompt(conversationID, _prompt);
         if (res) {
             response.value.push(res);
         }
@@ -30,7 +35,9 @@ async function addPrompt() {
     }
     // AIの返答を追加
     try {
-        const res = await useAddAiResponse(conversationID, prompt.value);
+        loading.value = true;
+        const res = await useAddAiResponse(conversationID, _prompt);
+        loading.value = false;
         if (res) {
             const streamMessage = res.message
             // 一旦空にして追加
@@ -46,7 +53,15 @@ async function addPrompt() {
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
     }
+    isCommunicating.value = false;
 }
+
+function canSend() {
+    if (prompt.value.length == 0) return false
+    if (isCommunicating.value) return false
+    return true
+}
+
 </script>
 
 <template>
@@ -58,11 +73,13 @@ async function addPrompt() {
                 <!-- ユーザーのメッセージ -->
                 <v-card :text="item.message" variant="outlined" v-if="!item.is_bot"></v-card>
             </v-list-item>
+            <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
+                height="6"></v-progress-linear>
         </v-list>
         <div class="prompt-box">
             <v-textarea v-model="prompt" auto-grow placeholder="メッセージを送信" rows="1" bg-color="white" density="compact"
                 variant="solo" append-inner-icon="mdi-magnify"></v-textarea>
-            <v-btn :disabled="!prompt" class="abs" color="primary" @click="addPrompt()">SEND</v-btn>
+            <v-btn :disabled="!canSend()" class="abs" color="primary" @click="addPrompt()">SEND</v-btn>
         </div>
     </v-container>
 </template>

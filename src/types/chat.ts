@@ -26,10 +26,14 @@ export type ConversationListResponse = {
     results: Conversation[]
 }
 
+/**
+ * 作成の時に仮で組み立てるので、オプショナルにしておく
+ * ここは改善の余地あり
+ */
 export type Message = {
-    id: number
+    id?: number
     message: string
-    tokens: number
+    tokens?: number
     is_bot: boolean
-    created_at: string
+    created_at?: string
 }
