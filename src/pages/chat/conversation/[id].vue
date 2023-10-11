@@ -59,6 +59,7 @@ async function addPrompt() {
 function canSend() {
     if (prompt.value.length == 0) return false
     if (isCommunicating.value) return false
+    if (/^\s*$/.test(prompt.value)) return false
     return true
 }
 
