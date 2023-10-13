@@ -6,17 +6,17 @@ definePageMeta({
   layout: 'account-layout'
 });
 
-const name = ref('')
+const lastName = ref('')
+const firstName = ref('')
 const password = ref('');
 const email = ref('');
 const confirmPassword = ref('');
-
-
-const serverError = ref(null)
+const serverError: Ref<string | null> = ref(null);
 const isSuccess = ref(false)
 const submitRegistrationForm = async () => {
   const formData = {
-    name: name.value,
+    last_name: lastName.value,
+    first_name: firstName.value,
     email: email.value,
     password: password.value,
     confirm_password: confirmPassword.value,
@@ -24,7 +24,7 @@ const submitRegistrationForm = async () => {
   const { data, pending, error, refresh } = await useAuthApi('registration/', 'POST', formData)
   if (error.value) {
     isSuccess.value = false;
-    serverError.value = error.value.data;
+    serverError.value = error.value.data.detail;
   }
   if (data.value) {
     isSuccess.value = true;
@@ -37,9 +37,10 @@ const submitRegistrationForm = async () => {
 <template>
   <h1 class="text-center font-weight-bold mb-5">会員登録</h1>
   <v-form id="registrationForm" @submit.prevent="submitRegistrationForm">
-    <v-text-field label="Name" name="name" v-model="name" :rules="[v => !!v || 'Name is required']"
-      placeholder="Enter your name..." required></v-text-field>
-
+    <v-text-field name="last_name" v-model="lastName" :rules="[v => !!v || '姓は必須です']" placeholder="姓"
+      required></v-text-field>
+    <v-text-field name="first_name" v-model="firstName" :rules="[v => !!v || '名は必須です']" placeholder="名"
+      required></v-text-field>
     <v-text-field label="Email" name="email" v-model="email"
       :rules="[v => !!v || 'Email is required', v => /.+@.+/.test(v) || 'Email must be valid']"
       placeholder="Enter your email..." required></v-text-field>
@@ -60,7 +61,7 @@ const submitRegistrationForm = async () => {
     <NuxtLink to="/account/login">Login</NuxtLink>
   </i>
   <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
-    {{ serverError.detail }}
+    {{ serverError}}
   </v-alert>
   <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
     ありがとうございます。Emailを確認してアカウントを有効化してください。

@@ -1,6 +1,7 @@
 export type User = {
     id?: number;
-    name?: string;
+    last_name?: string;
+    first_name?: string;
     email?: string;
     is_staff?: boolean;
 }

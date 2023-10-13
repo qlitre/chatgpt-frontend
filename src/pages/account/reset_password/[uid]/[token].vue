@@ -6,7 +6,7 @@ definePageMeta({
 });
 
 const isSuccess: Ref<boolean> = ref(false);
-const serverError: Ref<boolean | null> = ref(false);
+const serverError: Ref<string | null> = ref(null);
 const newPassword: Ref<string> = ref('');
 const confirmPassword: Ref<string> = ref('');
 
@@ -24,7 +24,7 @@ const submitResetPasswordConfirmForm = async () => {
   const { data, pending, error, refresh } = await useAuthApi('reset_password_confirm/', 'POST', payload)
   if (error.value) {
     isSuccess.value = false;
-    serverError.value = error.value.data;
+    serverError.value = error.value.data.detail;
   }
   if (data.value) {
     isSuccess.value = true;
@@ -49,7 +49,7 @@ const submitResetPasswordConfirmForm = async () => {
     </div>
   </v-form>
   <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
-    {{ serverError.detail }}
+    {{ serverError }}
   </v-alert>
   <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
     パスワードのリセットが完了しました。5秒後にログインページに移動します。

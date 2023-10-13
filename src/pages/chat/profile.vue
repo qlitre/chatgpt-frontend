@@ -3,17 +3,19 @@ import { useUserStore } from "@/stores/user";
 import { Ref } from 'vue';
 
 const userStore = useUserStore();
-const userName = ref(userStore.user.name);
-const serverError = ref(false);
+const lastName = ref(userStore.user.last_name);
+const firstName = ref(userStore.user.first_name);
+const serverError: Ref<string | null> = ref(null);
 const isSuccess = ref(false);
 const submitProfileForm = async () => {
   const formData = {
-    name: userName.value,
+    first_name: firstName.value,
+    last_name: lastName.value,
   }
   const { data, pending, error, refresh } = await useAuthApi('user/', 'PATCH', formData)
   if (error.value) {
     isSuccess.value = false;
-    serverError.value = error.value.data;
+    serverError.value = error.value.data.detail;
   }
   if (data.value) {
     isSuccess.value = true;
@@ -29,14 +31,16 @@ const submitProfileForm = async () => {
       <v-col cols="12" md="6" lg="4">
         <h1 class="text-center font-weight-bold mb-5">プロフィール</h1>
         <v-form @submit.prevent="submitProfileForm">
-          <v-text-field label="ユーザー名" v-model="userName" :rules="[v => !!v || 'Name is required']" placeholder="ユーザー名"
+          <v-text-field label="姓" v-model="lastName" :rules="[v => !!v || '姓は必須です']" placeholder="ユーザー名"
+            required></v-text-field>
+          <v-text-field label="名" v-model="firstName" :rules="[v => !!v || '名は必須です']" placeholder="ユーザー名"
             required></v-text-field>
 
           <v-btn type="submit" color="primary" block class="mt-8">
             更新
           </v-btn>
           <v-alert v-if="serverError" type="error" class="mt-2" dense variant="tonal">
-            {{ serverError.detail }}
+            {{ serverError }}
           </v-alert>
           <v-alert v-if="isSuccess" type="success" class="mt-2" dense variant="tonal">
             プロフィールアップデートが完了しました。

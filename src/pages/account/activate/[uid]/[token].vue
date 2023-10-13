@@ -5,13 +5,13 @@ definePageMeta({
 });
 
 const isSuccess: Ref<boolean> = ref(false);
-const serverError: Ref<boolean | null> = ref(false);
+const serverError: Ref<string | null> = ref(null);
 const onAccountActivation = async () => {
   const { params } = useRoute()
   const { data, pending, error, refresh } = await useAuthApi('activate/', 'POST', params)
   if (error.value) {
     isSuccess.value = false;
-    serverError.value = error.value.data;
+    serverError.value = error.value.data.detail;
   }
   if (data.value) {
     isSuccess.value = true;
@@ -33,7 +33,7 @@ const onAccountActivation = async () => {
   </div>
 
   <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
-    {{ serverError.detail }}
+    {{ serverError }}
   </v-alert>
   <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
     アカウント登録が完了しました。5秒後にログインページに移動します。

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { mergeProps } from 'vue'
 import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/auth";
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const onLogout = async () => {
-    await useAuthApi('logout/', 'POST', '')
+    await useAuthApi('logout/', 'POST', null)
     authStore.setAuthenticated(false)
     authStore.$reset();
     userStore.$reset();

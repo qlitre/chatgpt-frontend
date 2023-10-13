@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
 const authStore = useAuthStore();
 const userStore = useUserStore();
-const serverError = ref(false);
+const serverError: Ref<string | null> = ref(null);
 const password = ref('');
 const email = ref('');
 const submitLoginForm = async () => {
@@ -17,7 +17,7 @@ const submitLoginForm = async () => {
   }
   const { data, pending, error, refresh } = await useAuthApi('login/', 'POST', formData)
   if (error.value) {
-    serverError.value = error.value.data;
+    serverError.value = error.value.data.detail;
   }
   if (data.value) {
     serverError.value = null;
@@ -58,7 +58,7 @@ const submitLoginForm = async () => {
   </div>
 
   <v-alert v-if="serverError" type="error" class="mt-4">
-    {{ serverError.detail }}
+    {{ serverError }}
   </v-alert>
 </template>
 
