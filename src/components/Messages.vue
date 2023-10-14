@@ -32,6 +32,9 @@ if (conversationID != undefined) {
     }
 }
 
+/**
+ * 受け取った文字列を1文字ずつ表示
+ */
 async function streamDisplay(streamMessage: string) {
     const lst = history.value.length - 1
     for (const s of streamMessage) {
@@ -44,6 +47,7 @@ async function streamDisplay(streamMessage: string) {
  * 送信ボタンが押されたときに実行
  */
 async function addPrompt() {
+    if (!canSend()) return
     // 会話IDがない場合は会話を作成
     if (conversationID == undefined) return createConversation()
     isCommunicating.value = true;
@@ -101,7 +105,7 @@ async function createConversation() {
             await streamDisplay(streamMessage)
         }
         const topicId = res?.conversation.id
-        await navigateTo(`/chat/conversation/${topicId}`, { replace: false });
+        await navigateTo(`/chat/conversation/${topicId}`, { replace: true });
 
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
@@ -110,7 +114,18 @@ async function createConversation() {
 }
 
 /**
- * 送信ボタンが押せるかどうか
+ * Enterキーが単体で押されたときにチャットメッセージを送信
+ * Shift + Enterの場合は改行
+ */
+function handleEnterPress(event: KeyboardEvent) {
+    if (!event.shiftKey) {
+        addPrompt();
+        event.preventDefault();
+    }
+}
+
+/**
+ * 送信できるかどうかを制御
  */
 function canSend() {
     if (prompt.value.length == 0) return false
@@ -136,7 +151,7 @@ function canSend() {
         <div class="prompt-box">
             <div class="input-wrapper">
                 <v-textarea class="custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
-                    bg-color="white" density="compact" variant="solo"></v-textarea>
+                    bg-color="white" density="compact" variant="solo" @keyup.enter="handleEnterPress"></v-textarea>
 
                 <v-btn size="small" :disabled="!canSend()" icon="send" class="send-button" color="primary"
                     @click="addPrompt()"></v-btn>

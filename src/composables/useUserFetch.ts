@@ -11,8 +11,9 @@ const getUserIdFromStore = () => {
     return user.id;
 }
 
-export const useGetConversationList = async () => {
-    const url = 'http://localhost:8000/api/chat/conversations/'
+export const useGetConversationList = async (p: number = 1, q: string = '') => {
+
+    const url = `http://localhost:8000/api/chat/conversations?page=${p}&keyword=${q}`
     const userId = getUserIdFromStore();
     if (!userId) return;
     const body = { 'user_id': userId }
