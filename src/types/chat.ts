@@ -1,7 +1,22 @@
+
+/**
+ * 作成の時に仮で組み立てるので、オプショナルにしておく
+ * ここは改善の余地あり
+ */
+export type Message = {
+    id?: number
+    message: string
+    tokens?: number
+    is_bot: boolean
+    created_at?: string
+}
+
 export type Conversation = {
     id: number
     topic: string
     created_at: string
+    messages: Message[]
+
 }
 
 export type ConversationListResponse = {
@@ -24,16 +39,4 @@ export type ConversationListResponse = {
     currentPage: number
     pageSize: number
     results: Conversation[]
-}
-
-/**
- * 作成の時に仮で組み立てるので、オプショナルにしておく
- * ここは改善の余地あり
- */
-export type Message = {
-    id?: number
-    message: string
-    tokens?: number
-    is_bot: boolean
-    created_at?: string
 }

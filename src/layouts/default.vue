@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const drawer = ref(false);
 const searchDialog = ref(false); // 検索ダイアログの状態を管理するrefを追加します
 // 検索ボタンがクリックされた時に実行される関数
@@ -44,7 +44,7 @@ function search() {
       <v-btn icon @click="openSearchModal">
         <v-icon>search</v-icon>
       </v-btn>
-      <v-btn href="/chat" text>Home</v-btn>
+      <v-btn href="/chat">Home</v-btn>
     </v-app-bar>
     <!-- ここから検索モーダルのコード -->
     <v-dialog v-model="searchDialog" max-width="500px">
@@ -57,13 +57,12 @@ function search() {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="searchDialog = false">キャンセル</v-btn>
-          <v-btn color="blue darken-1" text @click="search()">検索</v-btn>
+          <v-btn color="blue darken-1" @click="searchDialog = false">キャンセル</v-btn>
+          <v-btn color="blue darken-1" @click="search()">検索</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- ここまで検索モーダルのコード -->
-
     <v-main>
       <slot />
     </v-main>

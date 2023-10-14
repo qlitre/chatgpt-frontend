@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     '/account/**': { ssr: false },
     '/chat/**': { ssr: false },
   },
+  app: {
+    pageTransition: { name: 'page', mode: 'default' }
+  },
   modules: [
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',

@@ -11,13 +11,24 @@ const getUserIdFromStore = () => {
     return user.id;
 }
 
+const getPostHeader = () => {
+    let csrfToken = useCookie('csrftoken')
+    if (!csrfToken.value) {
+        throw new Error('CSRF token is missing!');
+    }
+    return {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken.value
+    }
+}
+
 export const useGetConversationList = async (p: number = 1, q: string = '') => {
 
     const url = `http://localhost:8000/api/chat/conversations?page=${p}&keyword=${q}`
     const userId = getUserIdFromStore();
     if (!userId) return;
     const body = { 'user_id': userId }
-    const { data } = await useFetch<ConversationListResponse>(url, { params: body })
+    const { data } = await useFetch<ConversationListResponse>(url, { params: body, credentials: 'include' })
     return data.value
 }
 
@@ -34,7 +45,8 @@ export const useAddConversation = async (prompt: string) => {
         new_prompt: Message,
         new_ai_res: Message,
     }
-    const { data } = await useFetch<ConversationResponse>(url, { method: 'POST', params: body })
+    const headers = getPostHeader();
+    const { data } = await useFetch<ConversationResponse>(url, { method: 'POST', headers: headers, params: body, credentials: 'include' })
     return data.value
 }
 
@@ -43,7 +55,7 @@ export const useGetMessageList = async (conversationId: string) => {
     const userId = getUserIdFromStore();
     if (!userId) return;
     const body = { 'user_id': userId }
-    const { data } = await useFetch<Message[]>(url, { params: body })
+    const { data } = await useFetch<Message[]>(url, { params: body, credentials: 'include' })
     return data.value
 }
 
@@ -57,7 +69,8 @@ export const useAddPrompt = async (conversationId: string, prompt: string) => {
         "is_bot": false,
         "user": userId
     };
-    const { data } = await useFetch<Message>(url, { method: 'POST', body: body })
+    const headers = getPostHeader();
+    const { data } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     return data.value
 }
 
@@ -71,6 +84,7 @@ export const useAddAiResponse = async (conversationId: string, prompt: string) =
         "is_bot": true,
         "user": userId
     };
-    const { data } = await useFetch<Message>(url, { method: 'POST', body: body })
+    const headers = getPostHeader();
+    const { data } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     return data.value
 }

@@ -27,9 +27,21 @@ const search = () => {
     navigateTo(`/chat/conversation/?page=1&q=${q.value}`)
 }
 
+const reveal: Ref<Record<number, boolean>> = ref({});
+const recentMsg: Record<number, string> = {};
+
+if (response.value?.results) {
+    for (const conv of response?.value.results) {
+        reveal.value[conv.id] = false;
+        const arr = conv.messages;
+        let s = arr[arr.length - 1].message;
+        if (s.length > 50) s = s.slice(0, 50) + "..."
+        recentMsg[conv.id] = s;
+    }
+}
+
 // queryが変化した場合にページをリロードする
 watch(() => route.query, () => location.reload())
-
 
 </script>
 <template>
@@ -40,16 +52,17 @@ watch(() => route.query, () => location.reload())
         </div>
         <v-row class="mt-8">
             <v-col cols="12" sm="6" md="6" v-for="conv in response?.results" :key="conv.id">
-                <v-card class="mx-auto" max-width="540" height="auto" variant="outlined" color="indigo"
+                <v-card class="mx-auto" height="150" max-width="540" variant="outlined" color="indigo"
                     :href="`/chat/conversation/${conv.id}`">
+                    <v-card-title>
+                        {{ conv.topic }}
+                    </v-card-title>
+                    <v-card-subtitle>
+                        {{ conv.created_at }}
+                    </v-card-subtitle>
                     <v-card-text>
-                        <p class="text--primary">
-                            {{ conv.topic }}
-                        </p>
+                        {{ recentMsg[conv.id] }}
                     </v-card-text>
-                    <v-card-actions>
-                        <!-- アクションをここに追加 -->
-                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
