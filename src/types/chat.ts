@@ -40,3 +40,10 @@ export type ConversationListResponse = {
     pageSize: number
     results: Conversation[]
 }
+
+export type ConversationListParams = {
+    page?: number,
+    q?: string,
+    excludeFields?: string[],
+    fields?: string[],
+}

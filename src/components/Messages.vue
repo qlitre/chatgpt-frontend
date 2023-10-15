@@ -25,7 +25,6 @@ const displayEnd = (): void => {
 type ExtendedMessage = Message & {
     isRecentAI?: boolean;
 };
-
 const history = ref<ExtendedMessage[]>([]);
 const prompt = ref("")
 const loading = ref(false);
@@ -33,13 +32,9 @@ const loading = ref(false);
 const isCommunicating = ref(false);
 
 if (conversationID != undefined) {
-    try {
-        const res = await useGetMessageList(conversationID);
-        if (res) {
-            history.value = res;
-        }
-    } catch (error) {
-        console.error("APIリクエストに失敗しました:", error);
+    const conversationDetail = await useGetConvesationDetail(conversationID);
+    if (conversationDetail) {
+        history.value = conversationDetail.messages;
     }
 }
 
@@ -143,12 +138,6 @@ const unwatch = watch(canNavigate, async (newValue) => {
 onUnmounted(() => {
     unwatch();
 });
-
-
-
-
-
-
 
 </script>
 

@@ -22,9 +22,9 @@ function search() {
   <div>
     <v-app class="bg-blue-grey-lighten-5">
       <!-- sidebar-->
-      <v-navigation-drawer v-model="drawer" color="grey-darken-4">
+      <v-navigation-drawer v-model="drawer" color="white">
         <div class="text-center sticky mt-2 pb-2">
-          <v-btn variant="outlined" color="white" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
+          <v-btn variant="outlined" color="primary" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
         </div>
         <v-divider class="mt-2 mb-2"></v-divider>
         <SidebarConversations />

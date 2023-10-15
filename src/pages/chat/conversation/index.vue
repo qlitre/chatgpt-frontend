@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type { ConversationListResponse } from '../../../types/chat';
+import type { ConversationListResponse, ConversationListParams } from '../../../types/chat';
 
 const response = ref<ConversationListResponse>();
 const route = useRoute();
@@ -8,15 +8,11 @@ const p = Number(route.query.page)?.valueOf() || 1;
 const _q = (route.query.q != null) ? String(route.query.q) : "";
 const q = ref(_q);
 const page = ref(p);
-try {
-    const res = await useGetConversationList(p, q.value);
-    if (res) {
-        response.value = res;
-    }
-} catch (error) {
-    console.error("APIリクエストに失敗しました:", error);
+const params = { page: p, q: _q }
+const res = await useGetConversationList(params);
+if (res) {
+    response.value = res;
 }
-
 function paginationLink() {
     navigateTo(`/chat/conversation/?page=${page.value}&q=${q.value}`)
 }
