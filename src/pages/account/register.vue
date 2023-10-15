@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { reset } from '@formkit/core'
 import useAuthApi from "~/composables/useAuthApi";
 
 definePageMeta({
@@ -29,7 +28,6 @@ const submitRegistrationForm = async () => {
   if (data.value) {
     isSuccess.value = true;
     serverError.value = null;
-    reset('registrationForm')
   }
 };
 </script>

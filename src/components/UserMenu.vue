@@ -11,7 +11,7 @@ const logout = () => {
     <div class="text-center">
         <v-menu>
             <template v-slot:activator="{ props: menu }">
-                <v-btn variant="outlined" color="primary" v-bind="mergeProps(menu)" width="200">
+                <v-btn prepend-icon="manage_accounts" variant="outlined" color="primary" v-bind="mergeProps(menu)" width="200">
                     USER MENU
                 </v-btn>
             </template>

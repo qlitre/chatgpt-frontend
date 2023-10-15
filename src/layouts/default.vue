@@ -24,7 +24,7 @@ function search() {
       <!-- sidebar-->
       <v-navigation-drawer v-model="drawer" color="white">
         <div class="text-center sticky mt-2 pb-2">
-          <v-btn variant="outlined" color="primary" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
+          <v-btn prepend-icon="add" variant="outlined" color="primary" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
         </div>
         <v-divider class="mt-2 mb-2"></v-divider>
         <SidebarConversations />

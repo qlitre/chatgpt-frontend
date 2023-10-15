@@ -12,7 +12,6 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    '@formkit/nuxt',
   ],
   //  // To fix samesite console error
   //  piniaPersistedstate: {

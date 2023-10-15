@@ -59,10 +59,10 @@ watchEffect(async () => {
     <v-container class="pa-4 justify-center">
         <v-card class="pt-4">
             <div class="chip">
-                <v-chip v-if="isBot" color="green" text-color="white">
+                <v-chip prepend-icon="lightbulb_outline" v-if="isBot" color="green" text-color="white">
                     # AI Response
                 </v-chip>
-                <v-chip v-else color="blue" text-color="white">
+                <v-chip prepend-icon="account_circle" v-else color="blue" text-color="white">
                     # Your Prompt
                 </v-chip>
             </div>
