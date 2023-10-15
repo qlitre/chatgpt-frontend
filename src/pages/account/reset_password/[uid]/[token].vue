@@ -37,23 +37,25 @@ const submitResetPasswordConfirmForm = async () => {
 </script>
 
 <template>
-  <h1 class="text-center font-weight-bold mb-5">Reset Password</h1>
-  <v-form ref="form" @submit.prevent="submitResetPasswordConfirmForm">
-    <v-text-field label="Password" name="password" v-model="newPassword" type="password"
-      :rules="[v => !!v || 'Password is required']" placeholder="Enter your password..." required></v-text-field>
-    <v-text-field label="Confirm Password" name="confirm_password" v-model="confirmPassword" type="password"
-      :rules="[v => !!v || 'Confirm Password is required', v => v === newPassword || 'Passwords must match']"
-      placeholder="Re-enter your password..." required></v-text-field>
-    <div class="text-center mt-8">
-      <v-btn color="primary" @click="submitResetPasswordConfirmForm">パスワード変更</v-btn>
-    </div>
-  </v-form>
-  <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
-    {{ serverError }}
-  </v-alert>
-  <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
-    パスワードのリセットが完了しました。5秒後にログインページに移動します。
-  </v-alert>
+  <div class="mt-16">
+    <h1 class="text-center font-weight-bold mb-5">Reset Password</h1>
+    <v-form ref="form" @submit.prevent="submitResetPasswordConfirmForm">
+      <v-text-field label="Password" name="password" v-model="newPassword" type="password"
+        :rules="[v => !!v || 'Password is required']" placeholder="Enter your password..." required></v-text-field>
+      <v-text-field label="Confirm Password" name="confirm_password" v-model="confirmPassword" type="password"
+        :rules="[v => !!v || 'Confirm Password is required', v => v === newPassword || 'Passwords must match']"
+        placeholder="Re-enter your password..." required></v-text-field>
+      <div class="text-center mt-8">
+        <v-btn color="primary" @click="submitResetPasswordConfirmForm">パスワード変更</v-btn>
+      </div>
+    </v-form>
+    <v-alert v-if="serverError" type="error" dense class="mt-2" variant="tonal">
+      {{ serverError }}
+    </v-alert>
+    <v-alert v-if="isSuccess" type="success" dense class="mt-2" variant="tonal">
+      パスワードのリセットが完了しました。5秒後にログインページに移動します。
+    </v-alert>
+  </div>
 </template>
 
 <style lang="css" scoped></style>

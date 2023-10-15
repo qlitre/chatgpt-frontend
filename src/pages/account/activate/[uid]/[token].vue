@@ -24,7 +24,7 @@ const onAccountActivation = async () => {
 </script>
 
 <template>
-  <div class="text-center">
+  <div class="text-center mt-16">
     <h1 class="text-center font-weight-bold mb-5">アカウント有効化</h1>
     <p class="mb-4">下のボタンを押して有効化してください</p>
     <v-btn @click="onAccountActivation" type="submit">

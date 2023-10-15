@@ -1,13 +1,10 @@
 import { useUserStore } from "@/stores/user";
 import type { Conversation, Message, ConversationListResponse } from '../types/chat';
+import { onLogout } from '../utils/logout';
 
 const getUserIdFromStore = () => {
     const userStore = useUserStore();
     const { user } = userStore;
-    if (!user) {
-        navigateTo("/account/login", { replace: true });
-        return null;
-    }
     return user.id;
 }
 
@@ -23,19 +20,20 @@ const getPostHeader = () => {
 }
 
 export const useGetConversationList = async (p: number = 1, q: string = '') => {
-
     const url = `http://localhost:8000/api/chat/conversations?page=${p}&keyword=${q}`
     const userId = getUserIdFromStore();
-    if (!userId) return;
     const body = { 'user_id': userId }
-    const { data } = await useFetch<ConversationListResponse>(url, { params: body, credentials: 'include' })
+    const { data, error } = await useFetch<ConversationListResponse>(url, { params: body, credentials: 'include' })
+    if (error.value) {
+        console.log(error.value)
+        await onLogout()
+    }
     return data.value
 }
 
 export const useAddConversation = async (prompt: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/create/'
     const userId = getUserIdFromStore();
-    if (!userId) return;
     const body = {
         "prompt": prompt,
         "user_id": userId
@@ -46,23 +44,30 @@ export const useAddConversation = async (prompt: string) => {
         new_ai_res: Message,
     }
     const headers = getPostHeader();
-    const { data } = await useFetch<ConversationResponse>(url, { method: 'POST', headers: headers, params: body, credentials: 'include' })
+    const { data, error } = await useFetch<ConversationResponse>(url, { method: 'POST', headers: headers, params: body, credentials: 'include' })
+    if (error.value) {
+        console.log(error.value)
+        await onLogout()
+    }
     return data.value
 }
 
 export const useGetMessageList = async (conversationId: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/'
     const userId = getUserIdFromStore();
-    if (!userId) return;
     const body = { 'user_id': userId }
-    const { data } = await useFetch<Message[]>(url, { params: body, credentials: 'include' })
+    const { data, error } = await useFetch<Message[]>(url, { params: body, credentials: 'include' })
+    if (error.value) {
+        console.log(error.value)
+        await onLogout()
+    }
+
     return data.value
 }
 
 export const useAddPrompt = async (conversationId: string, prompt: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/'
     const userId = getUserIdFromStore();
-    if (!userId) return;
     const body = {
         "conversation": conversationId,
         "message": prompt,
@@ -70,14 +75,17 @@ export const useAddPrompt = async (conversationId: string, prompt: string) => {
         "user": userId
     };
     const headers = getPostHeader();
-    const { data } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
+    const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
+    if (error.value) {
+        console.log(error.value)
+        await onLogout()
+    }
     return data.value
 }
 
 export const useAddAiResponse = async (conversationId: string, prompt: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/ai/'
     const userId = getUserIdFromStore();
-    if (!userId) return;
     const body = {
         "conversation": conversationId,
         "message": prompt,
@@ -85,6 +93,10 @@ export const useAddAiResponse = async (conversationId: string, prompt: string) =
         "user": userId
     };
     const headers = getPostHeader();
-    const { data } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
+    const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
+    if (error.value) {
+        console.log(error.value)
+        await onLogout()
+    }
     return data.value
 }

@@ -9,9 +9,6 @@ export default defineNuxtConfig({
     '/account/**': { ssr: false },
     '/chat/**': { ssr: false },
   },
-  app: {
-    pageTransition: { name: 'page', mode: 'default' }
-  },
   modules: [
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
@@ -39,5 +36,5 @@ export default defineNuxtConfig({
       'process.env.DEBUG': false,
     },
   },
-  css: ['@/assets/main.scss', 'material-design-icons-iconfont/dist/material-design-icons.css',],
+  css: ['@/assets/main.scss', 'material-design-icons-iconfont/dist/material-design-icons.css','highlight.js/styles/panda-syntax-dark.css'],
 })

@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue'
-import { useUserStore } from "@/stores/user";
-import { useAuthStore } from "@/stores/auth";
+import { onLogout } from '../utils/logout'
 
-const userStore = useUserStore();
-const authStore = useAuthStore();
-const onLogout = async () => {
-    await useAuthApi('logout/', 'POST', null)
-    authStore.setAuthenticated(false)
-    authStore.$reset();
-    userStore.$reset();
-    await navigateTo("/account/login", { replace: true });
-};
+const logout = () => {
+    onLogout()
+}
+
 </script>
 <template>
     <div class="text-center">
@@ -31,7 +25,7 @@ const onLogout = async () => {
                     <v-list-item-title>Change Password</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                    <v-list-item-title @click="onLogout" class="cursor-pointer">Logout</v-list-item-title>
+                    <v-list-item-title @click="logout" class="cursor-pointer">Logout</v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-menu>

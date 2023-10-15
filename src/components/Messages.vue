@@ -14,8 +14,19 @@ type Props = {
 }
 
 const { conversationID } = defineProps<Props>()
+const newTopicId = ref()
+const canNavigate = ref(false)
+// 子コンポーネントのdisplayEndイベントを受け取ったときに実行
+const displayEnd = (): void => {
+    canNavigate.value = true;
+}
 
-const history = ref<Message[]>([]);
+
+type ExtendedMessage = Message & {
+    isRecentAI?: boolean;
+};
+
+const history = ref<ExtendedMessage[]>([]);
 const prompt = ref("")
 const loading = ref(false);
 // ChatGPTと通信中かどうか
@@ -29,17 +40,6 @@ if (conversationID != undefined) {
         }
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
-    }
-}
-
-/**
- * 受け取った文字列を1文字ずつ表示
- */
-async function streamDisplay(streamMessage: string) {
-    const lst = history.value.length - 1
-    for (const s of streamMessage) {
-        await new Promise(r => setTimeout(r, 10));
-        history.value[lst].message += s;
     }
 }
 
@@ -69,12 +69,9 @@ async function addPrompt() {
         const res = await useAddAiResponse(conversationID, _prompt);
         loading.value = false;
         if (res) {
-            const streamMessage = res.message
-            // 一旦空にして追加
-            res["message"] = ""
-            history.value.push(res);
-            // streamで受け取った文字列を1文字ずつ表示
-            await streamDisplay(streamMessage)
+            const obj: ExtendedMessage = res
+            obj["isRecentAI"] = true
+            history.value.push(obj);
         }
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
@@ -96,21 +93,16 @@ async function createConversation() {
         const res = await useAddConversation(_prompt);
         loading.value = false;
         if (res) {
-            const streamMessage = res.new_ai_res.message
-            // 一旦空にして追加
-            const aiResponse = res.new_ai_res
-            aiResponse["message"] = ""
+            const aiResponse: ExtendedMessage = res.new_ai_res
+            aiResponse["isRecentAI"] = true
             history.value.push(aiResponse);
-            // streamで受け取った文字列を1文字ずつ表示
-            await streamDisplay(streamMessage)
         }
-        const topicId = res?.conversation.id
-        await navigateTo(`/chat/conversation/${topicId}`, { replace: true });
-
+        newTopicId.value = res?.conversation.id
     } catch (error) {
         console.error("APIリクエストに失敗しました:", error);
     }
     isCommunicating.value = false;
+
 }
 
 /**
@@ -134,20 +126,38 @@ function canSend() {
     return true
 }
 
+const unwatch = watch(canNavigate, async (newValue) => {
+    // canNavigateがtrueになったら、ナビゲーション処理を実行
+    if (newValue) {
+        try {
+            // 新規作成の時のみナビゲーションを実行
+            if (newTopicId.value == undefined) return
+            navigateTo(`/chat/conversation/${newTopicId.value}`);
+        } catch (error) {
+            console.error("ナビゲーションに失敗しました:", error);
+        }
+    }
+});
+
+// コンポーネントのアンマウント時にウォッチャをクリーンアップ
+onUnmounted(() => {
+    unwatch();
+});
+
+
+
+
+
+
+
 </script>
 
 <template>
     <v-container class="top-container">
-        <v-list>
-            <v-list-item v-for="item in history" :key="item.id">
-                <!-- ボットのメッセージ -->
-                <v-card :text="item.message" variant="tonal" v-if="item.is_bot"></v-card>
-                <!-- ユーザーのメッセージ -->
-                <v-card :text="item.message" variant="outlined" v-if="!item.is_bot"></v-card>
-            </v-list-item>
-            <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
-                height="6"></v-progress-linear>
-        </v-list>
+        <MessageContent v-for="item in history" :key="item.id" :is-bot="item.is_bot" :text="item.message"
+            :isRecentAI="item.isRecentAI" @display-end="displayEnd()"></MessageContent>
+        <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
+            height="6"></v-progress-linear>
         <div class="prompt-box">
             <div class="input-wrapper">
                 <v-textarea class="custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"

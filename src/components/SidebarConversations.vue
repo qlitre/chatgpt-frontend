@@ -29,8 +29,8 @@ watch(() => route.params, async () => {
 
 </script>
 <template>
-    <div v-if="response.length > 0">
-        <v-list>
+    <div>
+        <v-list v-if="response.length > 0">
             <v-list-item v-for="item in response" :key="item.id" :href="`/chat/conversation/${item.id}`">
                 <v-list-item-title>
                     {{ item.topic }}
