@@ -1,19 +1,12 @@
 import type { Conversation, Message, ConversationListResponse, ConversationListParams } from '../types/chat';
 import { onLogout } from '../utils/logout';
-import { useUserStore } from "@/stores/user";
 
-const getUserIdFromStore = () => {
-    const userStore = useUserStore();
-    const { user } = userStore;
-    return user.id;
-}
 
 const getPostHeader = () => {
     let csrfToken = useCookie('csrftoken')
     if (!csrfToken.value) {
         throw new Error('CSRF token is missing!');
     }
-
     return {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken.value
@@ -51,7 +44,7 @@ export const useAddConversation = async (prompt: string) => {
         new_ai_res: Message,
     }
     const headers = getPostHeader();
-    const { data, error } = await useFetch<NewConversationResponse>(url, { method: 'POST', headers: headers, params: body, credentials: 'include' })
+    const { data, error } = await useFetch<NewConversationResponse>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
         console.log(error.value)
         await onLogout()
@@ -62,10 +55,8 @@ export const useAddConversation = async (prompt: string) => {
 export const useAddPrompt = async (conversationId: string, prompt: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/'
     const body = {
-        "conversation": conversationId,
         "message": prompt,
         "is_bot": false,
-        "user": getUserIdFromStore(),
     };
     const headers = getPostHeader();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
@@ -79,10 +70,8 @@ export const useAddPrompt = async (conversationId: string, prompt: string) => {
 export const useAddAiResponse = async (conversationId: string, prompt: string) => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/ai/'
     const body = {
-        "conversation": conversationId,
         "message": prompt,
         "is_bot": true,
-        "user": getUserIdFromStore(),
     };
     const headers = getPostHeader();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })

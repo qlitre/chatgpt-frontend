@@ -66,7 +66,7 @@ watchEffect(async () => {
                     # Your Prompt
                 </v-chip>
             </div>
-            <div ref="contentElm" v-html="contentHtml" class="md" />
+            <div v-html="contentHtml" class="md" />
         </v-card>
     </v-container>
 </template>

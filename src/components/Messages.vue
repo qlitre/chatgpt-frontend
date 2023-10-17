@@ -8,7 +8,6 @@
 
 import type { Message } from '../types/chat';
 
-
 type Props = {
     conversationID?: string;
 }
@@ -20,7 +19,6 @@ const canNavigate = ref(false)
 const displayEnd = (): void => {
     canNavigate.value = true;
 }
-
 
 type ExtendedMessage = Message & {
     isRecentAI?: boolean;
@@ -45,31 +43,24 @@ async function addPrompt() {
     if (!canSend()) return
     // 会話IDがない場合は会話を作成
     if (conversationID == undefined) return createConversation()
+
     isCommunicating.value = true;
     const _prompt = prompt.value
     prompt.value = ""
     // promptの内容を追加
-    try {
-        const res = await useAddPrompt(conversationID, _prompt);
-        if (res) {
-            history.value.push(res);
-        }
-        prompt.value = "";
-    } catch (error) {
-        console.error("APIリクエストに失敗しました:", error);
+    const res = await useAddPrompt(conversationID, _prompt);
+    if (res) {
+        history.value.push(res);
     }
+    prompt.value = "";
     // AIの返答を追加
-    try {
-        loading.value = true;
-        const res = await useAddAiResponse(conversationID, _prompt);
-        loading.value = false;
-        if (res) {
-            const obj: ExtendedMessage = res
-            obj["isRecentAI"] = true
-            history.value.push(obj);
-        }
-    } catch (error) {
-        console.error("APIリクエストに失敗しました:", error);
+    loading.value = true;
+    const aiRes = await useAddAiResponse(conversationID, _prompt);
+    loading.value = false;
+    if (aiRes) {
+        const obj: ExtendedMessage = aiRes
+        obj["isRecentAI"] = true
+        history.value.push(obj);
     }
     isCommunicating.value = false;
 }
@@ -79,23 +70,19 @@ async function addPrompt() {
  */
 async function createConversation() {
     isCommunicating.value = true;
-    try {
-        const tmp = { is_bot: false, message: prompt.value }
-        const _prompt = prompt.value
-        prompt.value = ""
-        history.value.push(tmp)
-        loading.value = true;
-        const res = await useAddConversation(_prompt);
-        loading.value = false;
-        if (res) {
-            const aiResponse: ExtendedMessage = res.new_ai_res
-            aiResponse["isRecentAI"] = true
-            history.value.push(aiResponse);
-        }
-        newTopicId.value = res?.conversation.id
-    } catch (error) {
-        console.error("APIリクエストに失敗しました:", error);
+    const tmp = { is_bot: false, message: prompt.value }
+    const _prompt = prompt.value
+    prompt.value = ""
+    history.value.push(tmp)
+    loading.value = true;
+    const res = await useAddConversation(_prompt);
+    loading.value = false;
+    if (res) {
+        const aiResponse: ExtendedMessage = res.new_ai_res
+        aiResponse["isRecentAI"] = true
+        history.value.push(aiResponse);
     }
+    newTopicId.value = res?.conversation.id
     isCommunicating.value = false;
 
 }
@@ -124,13 +111,9 @@ function canSend() {
 const unwatch = watch(canNavigate, async (newValue) => {
     // canNavigateがtrueになったら、ナビゲーション処理を実行
     if (newValue) {
-        try {
-            // 新規作成の時のみナビゲーションを実行
-            if (newTopicId.value == undefined) return
-            navigateTo(`/chat/conversation/${newTopicId.value}`);
-        } catch (error) {
-            console.error("ナビゲーションに失敗しました:", error);
-        }
+        // 新規作成の時のみナビゲーションを実行
+        if (newTopicId.value == undefined) return
+        navigateTo(`/chat/conversation/${newTopicId.value}`);
     }
 });
 

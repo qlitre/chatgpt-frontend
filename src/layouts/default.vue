@@ -1,7 +1,8 @@
 <script setup lang="ts">
+
 const drawer = ref(false);
-const searchDialog = ref(false); // 検索ダイアログの状態を管理するrefを追加します
-// 検索ボタンがクリックされた時に実行される関数
+const searchDialog = ref(false);
+
 const openSearchModal = () => {
   searchDialog.value = true;
 };
@@ -24,7 +25,8 @@ function search() {
       <!-- sidebar-->
       <v-navigation-drawer v-model="drawer" color="white">
         <div class="text-center sticky mt-2 pb-2">
-          <v-btn prepend-icon="add" variant="outlined" color="primary" class="mt-4" width="200" href="/chat">新しいチャット</v-btn>
+          <v-btn prepend-icon="add" variant="outlined" color="primary" class="mt-4" width="200"
+            href="/chat">新しいチャット</v-btn>
         </div>
         <v-divider class="mt-2 mb-2"></v-divider>
         <SidebarConversations />

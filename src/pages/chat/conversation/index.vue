@@ -18,17 +18,16 @@ function paginationLink() {
 }
 
 const search = () => {
+    if (q.value.trim() == "") return
     // 全角スペースを半角スペースに変換
     q.value = q.value.replace(/　/g, " ");
     navigateTo(`/chat/conversation/?page=1&q=${q.value}`)
 }
 
-const reveal: Ref<Record<number, boolean>> = ref({});
 const recentMsg: Record<number, string> = {};
 
 if (response.value?.results) {
     for (const conv of response?.value.results) {
-        reveal.value[conv.id] = false;
         const arr = conv.messages;
         let s = arr[arr.length - 1].message;
         if (s.length > 50) s = s.slice(0, 50) + "..."
