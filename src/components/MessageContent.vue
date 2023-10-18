@@ -82,12 +82,12 @@ watchEffect(async () => {
     :deep(*) {
         margin-top: 0;
         margin-bottom: 1rem;
-        line-height: 1.9;
+        line-height: 1.7;
         font-size: 1rem;
     }
 
     :deep(p) {
-        line-height: 1.8;
+        line-height: 1.7;
         white-space: pre-wrap;
 
         +p {
@@ -134,32 +134,21 @@ watchEffect(async () => {
     }
 
     :deep(blockquote) {
-        padding: 15px;
+        margin: 1.5rem 0;
+        padding-left: 15px;
         border-left: 2px solid #CBD5E0;
-        ;
         border-radius: 2px;
         color: #718096;
     }
 
-    :deep(h1) {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-
-    :deep(h2) {
-        border-bottom: 1px solid #CBD5E0;
-    }
-
-    :deep(h2),
+    :deep(h1):deep(h2),
     :deep(h3) {
         font-size: 1.25rem;
-        margin-top: 32px;
-        margin-bottom: 16px;
         font-weight: bold;
-    }
+        margin-top: 1rem;
+        margin-bottom: 1rem;
 
+    }
 
     :deep(a) {
         color: #1266f1;
@@ -171,12 +160,13 @@ watchEffect(async () => {
 
     :deep(ul),
     :deep(ol) {
-        padding-left: 1.5em;
-        margin: 2rem 0;
+        padding-left: 1.5rem;
+        margin: 1rem 0;
         line-height: 1.7;
 
         li {
-            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
         }
     }
 
