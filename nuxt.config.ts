@@ -35,5 +35,5 @@ export default defineNuxtConfig({
       'process.env.DEBUG': false,
     },
   },
-  css: ['@/assets/main.scss', 'material-design-icons-iconfont/dist/material-design-icons.css','highlight.js/styles/panda-syntax-dark.css'],
+  css: ['@/assets/main.scss', 'material-design-icons-iconfont/dist/material-design-icons.css', 'highlight.js/styles/panda-syntax-dark.css'],
 })
