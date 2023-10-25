@@ -2,6 +2,27 @@ import type { Conversation, Message, ConversationListResponse, ConversationListP
 import { onLogout } from '../utils/logout';
 
 
+type NewConversationResponse = {
+    conversation: Conversation,
+    new_prompt: Message,
+    new_ai_res: Message,
+}
+
+type err = {
+    detail: string
+}
+
+type UseAddConversationResult = {
+    error?: err | null;
+    data?: NewConversationResponse | null;
+};
+
+
+type UseAddMessageResult = {
+    error?: err | null;
+    data?: Message | null;
+};
+
 const getPostHeader = () => {
     let csrfToken = useCookie('csrftoken')
     if (!csrfToken.value) {
@@ -17,7 +38,6 @@ export const useGetConversationList = async (params: ConversationListParams) => 
     let url = `http://localhost:8000/api/chat/conversations/`
     const { data, error } = await useFetch<ConversationListResponse>(url, { params: params, credentials: 'include' })
     if (error.value) {
-        console.log(error.value)
         await onLogout()
     }
     return data.value
@@ -33,51 +53,39 @@ export const useGetConvesationDetail = async (conversationId: string) => {
     return data.value
 }
 
-export const useAddConversation = async (prompt: string) => {
+export const useAddConversation = async (prompt: string): Promise<UseAddConversationResult> => {
     const url = 'http://localhost:8000/api/chat/conversations/create/'
     const body = {
         "prompt": prompt,
     };
-    type NewConversationResponse = {
-        conversation: Conversation,
-        new_prompt: Message,
-        new_ai_res: Message,
-    }
     const headers = getPostHeader();
-    const { data, error } = await useFetch<NewConversationResponse>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
+    const { data, error } = await useFetch<NewConversationResponse>(url,
+        { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
-        console.log(error.value)
-        await onLogout()
+        if (error.value.statusCode == 403) {
+            console.log("Forbidden")
+            await onLogout()
+        }
+        return { error: error.value.data, data: null };
     }
-    return data.value
+    return { data: data.value };
 }
 
-export const useAddPrompt = async (conversationId: string, prompt: string) => {
+
+export const useAddMessage = async (conversationId: string, prompt: string): Promise<UseAddMessageResult> => {
     const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/'
     const body = {
         "message": prompt,
-        "is_bot": false,
     };
     const headers = getPostHeader();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
-        console.log(error.value)
-        await onLogout()
+        if (error.value?.statusCode == 403) {
+            console.log(error.value)
+            await onLogout()
+        }
+        return { error: error.value.data, data: null };
     }
-    return data.value
-}
 
-export const useAddAiResponse = async (conversationId: string, prompt: string) => {
-    const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/ai/'
-    const body = {
-        "message": prompt,
-        "is_bot": true,
-    };
-    const headers = getPostHeader();
-    const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
-    if (error.value) {
-        console.log(error.value)
-        await onLogout()
-    }
-    return data.value
+    return { data: data.value };
 }

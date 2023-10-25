@@ -1,11 +1,5 @@
 <script setup lang="ts">
 
-/**
- * トップページと会話詳細ページから呼び出される
- * 会話IDがあるかないかで処理を分岐。
- * もっといいやり方もありそう
- */
-
 import type { Message } from '../types/chat';
 
 type Props = {
@@ -22,7 +16,9 @@ const displayEnd = (): void => {
 
 type ExtendedMessage = Message & {
     isRecentAI?: boolean;
+    isTokenOver?: boolean;
 };
+
 const history = ref<ExtendedMessage[]>([]);
 const prompt = ref("")
 const loading = ref(false);
@@ -47,21 +43,23 @@ async function addPrompt() {
     isCommunicating.value = true;
     const _prompt = prompt.value
     prompt.value = ""
-    // promptの内容を追加
-    const res = await useAddPrompt(conversationID, _prompt);
-    if (res) {
-        history.value.push(res);
-    }
-    prompt.value = "";
-    // AIの返答を追加
+    const tmp = { is_bot: false, message: _prompt }
+    history.value.push(tmp)
     loading.value = true;
-    const aiRes = await useAddAiResponse(conversationID, _prompt);
-    loading.value = false;
-    if (aiRes) {
-        const obj: ExtendedMessage = aiRes
+    // promptをデータベースに保存
+    const res = await useAddMessage(conversationID, _prompt);
+    if (res.error) {
+        loading.value = false;
+        isCommunicating.value = false;
+        history.value.push({ is_bot: true, isTokenOver: true, message: res.error.detail })
+        return
+    }
+    if (res.data) {
+        const obj: ExtendedMessage = res.data
         obj["isRecentAI"] = true
         history.value.push(obj);
     }
+    loading.value = false;
     isCommunicating.value = false;
 }
 
@@ -72,19 +70,25 @@ async function createConversation() {
     isCommunicating.value = true;
     const tmp = { is_bot: false, message: prompt.value }
     const _prompt = prompt.value
-    prompt.value = ""
     history.value.push(tmp)
     loading.value = true;
     const res = await useAddConversation(_prompt);
+    if (res.error) {
+        loading.value = false;
+        isCommunicating.value = false;
+        prompt.value = ""
+        history.value.push({ is_bot: true, isTokenOver: true, message: res.error.detail })
+        return
+    }
+    prompt.value = ""
     loading.value = false;
-    if (res) {
-        const aiResponse: ExtendedMessage = res.new_ai_res
+    if (res.data) {
+        const aiResponse: ExtendedMessage = res.data.new_ai_res
         aiResponse["isRecentAI"] = true
         history.value.push(aiResponse);
+        newTopicId.value = res.data.conversation.id
     }
-    newTopicId.value = res?.conversation.id
     isCommunicating.value = false;
-
 }
 
 /**
@@ -127,7 +131,7 @@ onUnmounted(() => {
 <template>
     <v-container class="top-container">
         <MessageContent v-for="item in history" :key="item.id" :is-bot="item.is_bot" :text="item.message"
-            :isRecentAI="item.isRecentAI" @display-end="displayEnd()"></MessageContent>
+            :isRecentAI="item.isRecentAI" :isTokenOver="item.isTokenOver" @display-end="displayEnd()"></MessageContent>
         <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
             height="6"></v-progress-linear>
         <div class="prompt-box">

@@ -3,6 +3,7 @@ import { useUserStore } from "@/stores/user";
 
 type BodyType = { [key: string]: any } | null;
 
+
 export default async (endpoint: string, method = 'GET', body: BodyType = null) => {
   const baseURL = 'http://localhost:8000/api/account/'
   const authStore = useAuthStore();

@@ -5,6 +5,7 @@ type Props = {
     isBot: boolean,
     text: string,
     isRecentAI?: boolean,
+    isTokenOver?: boolean,
 }
 
 interface Emits {
@@ -57,7 +58,10 @@ watchEffect(async () => {
 
 <template>
     <v-container class="pa-4 justify-center">
-        <v-card class="pt-4">
+        <v-alert v-if="isTokenOver" type="error" class="mt-4">
+            {{ text }}
+        </v-alert>
+        <v-card v-else class="pt-4">
             <div class="chip">
                 <v-chip prepend-icon="lightbulb_outline" v-if="isBot" color="green" text-color="white">
                     # AI Response
