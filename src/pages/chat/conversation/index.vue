@@ -62,7 +62,7 @@ watch(() => route.query, () => location.reload())
             </v-col>
         </v-row>
         <div class="mt-8">
-            <v-pagination v-model="page" :length="response?.totalPages" :total-visible="7" color="indigo"
+            <v-pagination v-model="page" :length="response?.totalPages" :total-visible="5" color="indigo"
                 @click="paginationLink()"></v-pagination>
         </div>
     </v-container>

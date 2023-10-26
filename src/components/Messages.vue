@@ -70,6 +70,7 @@ async function createConversation() {
     isCommunicating.value = true;
     const tmp = { is_bot: false, message: prompt.value }
     const _prompt = prompt.value
+    prompt.value = ""
     history.value.push(tmp)
     loading.value = true;
     const res = await useAddConversation(_prompt);
@@ -80,7 +81,6 @@ async function createConversation() {
         history.value.push({ is_bot: true, isTokenOver: true, message: res.error.detail })
         return
     }
-    prompt.value = ""
     loading.value = false;
     if (res.data) {
         const aiResponse: ExtendedMessage = res.data.new_ai_res
@@ -136,9 +136,9 @@ onUnmounted(() => {
             height="6"></v-progress-linear>
         <div class="prompt-box">
             <div class="input-wrapper">
-                <v-textarea class="custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
-                    bg-color="white" density="compact" variant="solo" @keyup.enter="handleEnterPress"></v-textarea>
-
+                <v-textarea class="textarea custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
+                    max-rows="7" bg-color="white" density="compact" variant="solo"
+                    @keyup.enter="handleEnterPress"></v-textarea>
                 <v-btn size="small" :disabled="!canSend()" icon="send" class="send-button" color="primary"
                     @click="addPrompt()"></v-btn>
             </div>
@@ -166,6 +166,7 @@ onUnmounted(() => {
 .custom-textarea {
     width: 100%;
     box-sizing: border-box;
+    overflow: auto;
 }
 
 .send-button {
