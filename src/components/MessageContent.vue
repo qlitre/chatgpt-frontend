@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it'
 import hljs from "highlight.js"
+
 type Props = {
     isBot: boolean,
     text: string,

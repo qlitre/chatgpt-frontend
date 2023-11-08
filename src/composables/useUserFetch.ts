@@ -1,6 +1,12 @@
 import type { Conversation, Message, ConversationListResponse, ConversationListParams } from '../types/chat';
 import { onLogout } from '../utils/logout';
+import { useUserStore } from "@/stores/user";
+import { CHAT_BASE_URL } from '~/settings/siteSettings';
 
+const getauthToken = () => {
+    const userStore = useUserStore()
+    return userStore.user.auth_token
+}
 
 type NewConversationResponse = {
     conversation: Conversation,
@@ -23,30 +29,34 @@ type UseAddMessageResult = {
     data?: Message | null;
 };
 
-const getPostHeader = () => {
+const getHeaders = () => {
     let csrfToken = useCookie('csrftoken')
     if (!csrfToken.value) {
         throw new Error('CSRF token is missing!');
     }
     return {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken.value
+        'X-CSRFToken': csrfToken.value,
+        'Authorization': `Token ${getauthToken()}`
     }
 }
 
 export const useGetConversationList = async (params: ConversationListParams) => {
-    let url = `http://localhost:8000/api/chat/conversations/`
-    const { data, error } = await useFetch<ConversationListResponse>(url, { params: params, credentials: 'include' })
-    if (error.value) {
+    const url = CHAT_BASE_URL + 'conversations/'
+    const headers = getHeaders();
+    const { data, error } = await useFetch<ConversationListResponse>(url, { params: params, headers: headers, credentials: 'include' })
+    if (error.value?.statusCode == 403) {
+        console.log(error.value)
         await onLogout()
     }
     return data.value
 }
 
 export const useGetConvesationDetail = async (conversationId: string) => {
-    const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/'
-    const { data, error } = await useFetch<Conversation>(url, { credentials: 'include' })
-    if (error.value) {
+    const url = CHAT_BASE_URL + 'conversations/' + conversationId + '/'
+    const headers = getHeaders();
+    const { data, error } = await useFetch<Conversation>(url, { headers: headers, credentials: 'include' })
+    if (error.value?.statusCode == 403) {
         console.log(error.value)
         await onLogout()
     }
@@ -54,16 +64,16 @@ export const useGetConvesationDetail = async (conversationId: string) => {
 }
 
 export const useAddConversation = async (prompt: string): Promise<UseAddConversationResult> => {
-    const url = 'http://localhost:8000/api/chat/conversations/create/'
+    const url = CHAT_BASE_URL + 'conversations/create/'
     const body = {
         "prompt": prompt,
     };
-    const headers = getPostHeader();
+    const headers = getHeaders();
     const { data, error } = await useFetch<NewConversationResponse>(url,
         { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
         if (error.value.statusCode == 403) {
-            console.log("Forbidden")
+            console.log(error.value)
             await onLogout()
         }
         return { error: error.value.data, data: null };
@@ -73,11 +83,11 @@ export const useAddConversation = async (prompt: string): Promise<UseAddConversa
 
 
 export const useAddMessage = async (conversationId: string, prompt: string): Promise<UseAddMessageResult> => {
-    const url = 'http://localhost:8000/api/chat/conversations/' + conversationId + '/messages/create/'
+    const url = CHAT_BASE_URL + 'conversations/' + conversationId + '/messages/create/'
     const body = {
         "message": prompt,
     };
-    const headers = getPostHeader();
+    const headers = getHeaders();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
         if (error.value?.statusCode == 403) {
