@@ -7,7 +7,7 @@ definePageMeta({
 <template>
   <v-container>
     <v-spacer />
-    <h1 class="text-center mt-12">ChatGPT APP</h1>
+    <h1 class="text-center mt-12">OpenAI Chat APP</h1>
     <v-row class="mt-12" align="center" justify="center">
       <v-col cols="auto">
         <v-btn elevation="4" size="x-large" href="/account/login" color="primary">ログイン</v-btn>

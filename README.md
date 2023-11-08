@@ -1,8 +1,8 @@
-chatgptアプリのフロントエンドです。
+OpenAI API Chatアプリのフロントエンドです。
 
 Nuxt.js 
 
-[バックエンド](https://github.com/qlitre/chatgpt-backend)
+[バックエンド](https://github.com/qlitre/openai-chat-backend)
 
 ## 画面イメージ
 

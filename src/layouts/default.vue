@@ -42,7 +42,7 @@ function search() {
       <!-- header -->
       <v-app-bar>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-app-bar-title>ChatGPT APP</v-app-bar-title>
+        <v-app-bar-title>OpenAI Chat APP</v-app-bar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="openSearchModal">
           <v-icon>search</v-icon>

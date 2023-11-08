@@ -8,8 +8,6 @@ const getauthToken = () => {
   return userStore.user.auth_token
 }
 
-
-
 type BodyType = { [key: string]: any } | null;
 
 /**
