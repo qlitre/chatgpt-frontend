@@ -1,7 +1,7 @@
 import { useAuthStore } from "~/stores/auth";
 import { useUserStore } from "@/stores/user";
 import { AUTH_BASE_URL } from "~/settings/siteSettings";
-
+import type { LoginResponse, LoginError } from '~/types/account'
 
 const getauthToken = () => {
   const userStore = useUserStore()
@@ -46,6 +46,7 @@ const baseFetch = async (url: string, method: string, body: BodyType = {}, useTo
 
   try {
     const response = await fetch(url, fetchOptions);
+    console.log(response.body)
     if (!response.ok) {
       // Error body might not be JSON
       const errorText = await response.text();

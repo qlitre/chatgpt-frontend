@@ -16,7 +16,6 @@ export type Conversation = {
     topic: string
     created_at: string
     messages: Message[]
-
 }
 
 export type ConversationListResponse = {

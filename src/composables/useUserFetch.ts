@@ -1,11 +1,15 @@
 import type { Conversation, Message, ConversationListResponse, ConversationListParams } from '../types/chat';
-import { onLogout } from '../utils/logout';
 import { useUserStore } from "@/stores/user";
 import { CHAT_BASE_URL } from '~/settings/siteSettings';
 
 const getauthToken = () => {
     const userStore = useUserStore()
     return userStore.user.auth_token
+}
+
+const onLogout = async () => {
+    await useLogout()
+    await navigateTo("/account/login", { replace: true });
 }
 
 type NewConversationResponse = {
@@ -72,11 +76,13 @@ export const useAddConversation = async (prompt: string): Promise<UseAddConversa
     const { data, error } = await useFetch<NewConversationResponse>(url,
         { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
+        const ret = { error: error.value.data, data: null };
         if (error.value.statusCode == 403) {
             console.log(error.value)
             await onLogout()
+            return ret
         }
-        return { error: error.value.data, data: null };
+        return ret
     }
     return { data: data.value };
 }
@@ -90,12 +96,13 @@ export const useAddMessage = async (conversationId: string, prompt: string): Pro
     const headers = getHeaders();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
+        const ret = { error: error.value.data, data: null };
         if (error.value?.statusCode == 403) {
             console.log(error.value)
             await onLogout()
+            return ret;
         }
-        return { error: error.value.data, data: null };
+        return ret;
     }
-
     return { data: data.value };
 }
