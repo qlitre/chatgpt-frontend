@@ -1,6 +1,6 @@
 import type { Conversation, Message, ConversationListResponse, ConversationListParams } from '../types/chat';
 import { useUserStore } from "@/stores/user";
-import { CHAT_BASE_URL } from '~/settings/siteSettings';
+import { AUTH_BASE_URL, CHAT_BASE_URL } from '~/settings/siteSettings';
 
 const getauthToken = () => {
     const userStore = useUserStore()
@@ -33,8 +33,13 @@ type UseAddMessageResult = {
     data?: Message | null;
 };
 
-const getHeaders = () => {
+const getHeaders = async () => {
+
     let csrfToken = useCookie('csrftoken')
+    if (!csrfToken.value) {
+        await useFetch(AUTH_BASE_URL + 'account/csrf_cookie/', { credentials: 'include' })
+    }
+    csrfToken = useCookie('csrftoken')
     if (!csrfToken.value) {
         throw new Error('CSRF token is missing!');
     }
@@ -47,7 +52,7 @@ const getHeaders = () => {
 
 export const useGetConversationList = async (params: ConversationListParams) => {
     const url = CHAT_BASE_URL + 'conversations/'
-    const headers = getHeaders();
+    const headers = await getHeaders();
     const { data, error } = await useFetch<ConversationListResponse>(url, { params: params, headers: headers, credentials: 'include' })
     if (error.value?.statusCode == 403) {
         console.log(error.value)
@@ -58,7 +63,7 @@ export const useGetConversationList = async (params: ConversationListParams) => 
 
 export const useGetConvesationDetail = async (conversationId: string) => {
     const url = CHAT_BASE_URL + 'conversations/' + conversationId + '/'
-    const headers = getHeaders();
+    const headers = await getHeaders();
     const { data, error } = await useFetch<Conversation>(url, { headers: headers, credentials: 'include' })
     if (error.value?.statusCode == 403) {
         console.log(error.value)
@@ -72,7 +77,7 @@ export const useAddConversation = async (prompt: string): Promise<UseAddConversa
     const body = {
         "prompt": prompt,
     };
-    const headers = getHeaders();
+    const headers = await getHeaders();
     const { data, error } = await useFetch<NewConversationResponse>(url,
         { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
@@ -93,7 +98,7 @@ export const useAddMessage = async (conversationId: string, prompt: string): Pro
     const body = {
         "message": prompt,
     };
-    const headers = getHeaders();
+    const headers = await getHeaders();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
         const ret = { error: error.value.data, data: null };
