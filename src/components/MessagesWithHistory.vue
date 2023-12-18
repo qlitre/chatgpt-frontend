@@ -1,14 +1,24 @@
 <script setup lang="ts">
+
+import type { Message } from '../types/chat';
 import MarkdownIt from 'markdown-it'
 import hljs from "highlight.js"
 
-import type { Message } from '../types/chat';
+type Props = {
+    conversationID: string;
+}
+
+const { conversationID } = defineProps<Props>()
 
 const history = ref<Message[]>([]);
 const prompt = ref("")
-const loading = ref(false);
 // ChatGPTと通信中かどうか
 const isCommunicating = ref(false);
+
+const conversationDetail = await useGetConvesationDetail(conversationID);
+if (conversationDetail) {
+    history.value = conversationDetail.messages;
+}
 
 /**
  * 送信ボタンが押されたときに実行
@@ -16,24 +26,22 @@ const isCommunicating = ref(false);
 async function addPrompt() {
     if (!canSend()) return
     isCommunicating.value = true
-    // streamする
+    const _prompt = prompt.value
     try {
-        const response = await useGetStreamChat(prompt.value);
+        const response = await useGetStreamChatWithHistory(_prompt, conversationID);
         if (response.body == null) return
-        const _prompt = prompt.value
         history.value.push({ is_bot: false, message: _prompt })
         prompt.value = ""
-        history.value.push({ is_bot: true, message: '' })
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
-        loading.value = false;
+        history.value.push({ is_bot: true, message: '' })
+        const lstIndex = history.value.length - 1
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
                 break;
             }
             const chunk = decoder.decode(value, { stream: true });
-            console.log(chunk)
             // chunk dataが２つ以上で送られてくる場合があるので、{}で分割する
             const jsonArr: string[] = []
             const stack: string[] = []
@@ -55,20 +63,26 @@ async function addPrompt() {
                     break;
                 }
                 if (parsedData.content) {
-                    history.value[1].message += parsedData.content;
+                    history.value[lstIndex].message += parsedData.content;
                 }
             }
         }
-        isCommunicating.value = false
-        const res = await useAddConversation(_prompt, history.value[1].message)
-        if (res.data) {
-            const newTopicId = res.data.conversation.id
-            navigateTo(`/chat/conversation/${newTopicId}`);
-        }
+        // aiのメッセージを保存
+        const res = await useAddMessage(conversationID, history.value[lstIndex].message, true)
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+}
 
+/**
+ * Enterキーが単体で押されたときにチャットメッセージを送信
+ * Shift + Enterの場合は改行
+ */
+function handleEnterPress(event: KeyboardEvent) {
+    if (!event.shiftKey) {
+        addPrompt();
+        event.preventDefault();
+    }
 }
 
 /**
@@ -81,7 +95,6 @@ function canSend() {
     return true
 }
 
-
 const md = new MarkdownIt({
     linkify: true,
     highlight(code: string, lang: string) {
@@ -89,17 +102,6 @@ const md = new MarkdownIt({
         return `<pre class="hljs-code-container"><div class="hljs-code-header d-flex align-center justify-space-between bg-grey-darken-3 pa-1"><span class="pl-2 text-caption">${language}</span></div><code class="hljs language-${language}">${hljs.highlight(code, { language: language, ignoreIllegals: true }).value}</code></pre>`
     },
 })
-
-/**
- * Enterキーが単体で押されたときにチャットメッセージを送信
- * Shift + Enterの場合は改行
- */
-function handleEnterPress(event: KeyboardEvent) {
-    if (!event.shiftKey) {
-        addPrompt();
-        event.preventDefault();
-    }
-}
 
 </script>
 
@@ -118,7 +120,6 @@ function handleEnterPress(event: KeyboardEvent) {
                 <div v-html="md.render(item.message)" class="md" />
             </v-card>
         </v-container>
-
         <div class="prompt-box">
             <div class="input-wrapper">
                 <v-textarea class="textarea custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
@@ -161,6 +162,7 @@ function handleEnterPress(event: KeyboardEvent) {
     right: 8px;
     /* adjust this value based on the desired position from the right edge */
 }
+
 
 .chip {
     padding: 0 4%;

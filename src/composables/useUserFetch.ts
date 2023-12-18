@@ -34,7 +34,6 @@ type UseAddMessageResult = {
 };
 
 const getHeaders = async () => {
-
     let csrfToken = useCookie('csrftoken')
     if (!csrfToken.value) {
         await useFetch(AUTH_BASE_URL + 'account/csrf_cookie/', { credentials: 'include' })
@@ -48,6 +47,33 @@ const getHeaders = async () => {
         'X-CSRFToken': csrfToken.value,
         'Authorization': `Token ${getauthToken()}`
     }
+}
+
+
+export const useGetStreamChat = async (prompt: string) => {
+    const url = CHAT_BASE_URL + 'stream/';
+    const headers = await getHeaders();
+    const body = {
+        prompt: prompt
+    };
+    return await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body)
+    });
+}
+
+export const useGetStreamChatWithHistory = async (prompt: string, conversationID: string) => {
+    const url = CHAT_BASE_URL + 'conversations/' + conversationID + '/stream/';
+    const headers = await getHeaders();
+    const body = {
+        prompt: prompt
+    };
+    return await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body)
+    });
 }
 
 export const useGetConversationList = async (params: ConversationListParams) => {
@@ -72,10 +98,11 @@ export const useGetConvesationDetail = async (conversationId: string) => {
     return data.value
 }
 
-export const useAddConversation = async (prompt: string): Promise<UseAddConversationResult> => {
+export const useAddConversation = async (prompt: string, aires: string): Promise<UseAddConversationResult> => {
     const url = CHAT_BASE_URL + 'conversations/create/'
     const body = {
         "prompt": prompt,
+        "ai_res": aires
     };
     const headers = await getHeaders();
     const { data, error } = await useFetch<NewConversationResponse>(url,
@@ -93,10 +120,11 @@ export const useAddConversation = async (prompt: string): Promise<UseAddConversa
 }
 
 
-export const useAddMessage = async (conversationId: string, prompt: string): Promise<UseAddMessageResult> => {
+export const useAddMessage = async (conversationId: string, prompt: string, isBot: boolean): Promise<UseAddMessageResult> => {
     const url = CHAT_BASE_URL + 'conversations/' + conversationId + '/messages/create/'
     const body = {
         "message": prompt,
+        "is_bot": isBot
     };
     const headers = await getHeaders();
     const { data, error } = await useFetch<Message>(url, { method: 'POST', headers: headers, body: body, credentials: 'include' })

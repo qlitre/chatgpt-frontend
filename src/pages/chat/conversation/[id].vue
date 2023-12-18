@@ -6,5 +6,5 @@ const conversationID = String(route.params.id);
 </script>
 
 <template>
-    <Messages :conversationID="conversationID" />
+    <MessagesWithHistory :conversationID="conversationID" />
 </template>
