@@ -33,7 +33,6 @@ async function addPrompt() {
                 break;
             }
             const chunk = decoder.decode(value, { stream: true });
-            console.log(chunk)
             // chunk dataが２つ以上で送られてくる場合があるので、{}で分割する
             const jsonArr: string[] = []
             const stack: string[] = []
