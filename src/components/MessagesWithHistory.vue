@@ -32,7 +32,7 @@ async function addPrompt() {
     try {
         const response = await useGetStreamChatWithHistory(_prompt, conversationID);
         if (response.body == null) return
-        history.value.push({ is_bot: false, message: _prompt })        
+        history.value.push({ is_bot: false, message: _prompt })
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
         history.value.push({ is_bot: true, message: '' })
@@ -64,7 +64,12 @@ async function addPrompt() {
                     break;
                 }
                 if (parsedData.content) {
-                    history.value[lstIndex].message += parsedData.content;
+                    // 本番にデプロイするとチャンクが大きくなるので、25msごとに追加する
+                    // 原因は良く分からない
+                    for (const s of parsedData.content) {
+                        await new Promise(r => setTimeout(r, 25));
+                        history.value[lstIndex].message += s
+                    }
                 }
             }
         }

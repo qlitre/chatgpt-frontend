@@ -55,7 +55,12 @@ async function addPrompt() {
                     break;
                 }
                 if (parsedData.content) {
-                    history.value[1].message += parsedData.content;
+                    // 本番にデプロイするとチャンクが大きくなるので、25msごとに追加する
+                    // 原因は良く分からない
+                    for (const s of parsedData.content) {
+                        await new Promise(r => setTimeout(r, 25));
+                        history.value[1].message += s
+                    }
                 }
             }
         }
