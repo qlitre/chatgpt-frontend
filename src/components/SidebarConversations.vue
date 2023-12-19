@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import type { Conversation } from '../types/chat';
+import { ref } from 'vue'
 
 const response = ref<Conversation[]>([]);
 const params = { excludeFields: ['messages'] }

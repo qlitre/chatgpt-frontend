@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 
 import type { Message } from '../types/chat';
 import MarkdownIt from 'markdown-it'
@@ -27,11 +28,11 @@ async function addPrompt() {
     if (!canSend()) return
     isCommunicating.value = true
     const _prompt = prompt.value
+    prompt.value = ""
     try {
         const response = await useGetStreamChatWithHistory(_prompt, conversationID);
         if (response.body == null) return
-        history.value.push({ is_bot: false, message: _prompt })
-        prompt.value = ""
+        history.value.push({ is_bot: false, message: _prompt })        
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
         history.value.push({ is_bot: true, message: '' })

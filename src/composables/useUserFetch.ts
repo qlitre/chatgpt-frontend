@@ -1,6 +1,6 @@
 import type { Conversation, Message, ConversationListResponse, ConversationListParams } from '../types/chat';
-import { useUserStore } from "@/stores/user";
-import { AUTH_BASE_URL, CHAT_BASE_URL } from '~/settings/siteSettings';
+import { useUserStore } from "../stores/user";
+import { AUTH_BASE_URL, CHAT_BASE_URL } from '../settings/siteSettings';
 
 const getauthToken = () => {
     const userStore = useUserStore()

@@ -1,6 +1,6 @@
-import { useAuthStore } from "~/stores/auth";
-import { useUserStore } from "@/stores/user";
-import { AUTH_BASE_URL } from "~/settings/siteSettings";
+import { useAuthStore } from "../stores/auth";
+import { useUserStore } from "../stores/user";
+import { AUTH_BASE_URL } from "../settings/siteSettings";
 import type {
   LoginResponse,
   LoginError,

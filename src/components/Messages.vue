@@ -3,6 +3,7 @@ import MarkdownIt from 'markdown-it'
 import hljs from "highlight.js"
 
 import type { Message } from '../types/chat';
+import { ref } from 'vue'
 
 const history = ref<Message[]>([]);
 const prompt = ref("")
@@ -16,13 +17,13 @@ const isCommunicating = ref(false);
 async function addPrompt() {
     if (!canSend()) return
     isCommunicating.value = true
+    const _prompt = prompt.value
+    prompt.value = ""
     // streamする
     try {
-        const response = await useGetStreamChat(prompt.value);
+        const response = await useGetStreamChat(_prompt);
         if (response.body == null) return
-        const _prompt = prompt.value
         history.value.push({ is_bot: false, message: _prompt })
-        prompt.value = ""
         history.value.push({ is_bot: true, message: '' })
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
