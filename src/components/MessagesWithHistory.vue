@@ -99,14 +99,6 @@ const scrollChatWindow = () => {
     grab.value.scrollIntoView({ behavior: 'smooth' })
 }
 
-onMounted(() => {
-    window.scrollTo(
-        {
-            top: document.body.scrollHeight,
-        }
-    );
-});
-
 </script>
 
 <template>
