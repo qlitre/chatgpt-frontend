@@ -12,19 +12,13 @@ const onLogout = async () => {
     await navigateTo("/account/login", { replace: true });
 }
 
-type NewConversationResponse = {
-    conversation: Conversation,
-    new_prompt: Message,
-    new_ai_res: Message,
-}
-
 type err = {
     detail: string
 }
 
 type UseAddConversationResult = {
     error?: err | null;
-    data?: NewConversationResponse | null;
+    data?: Conversation | null;
 };
 
 
@@ -105,7 +99,7 @@ export const useAddConversation = async (prompt: string, aires: string): Promise
         "ai_res": aires
     };
     const headers = await getHeaders();
-    const { data, error } = await useFetch<NewConversationResponse>(url,
+    const { data, error } = await useFetch<Conversation>(url,
         { method: 'POST', headers: headers, body: body, credentials: 'include' })
     if (error.value) {
         const ret = { error: error.value.data, data: null };

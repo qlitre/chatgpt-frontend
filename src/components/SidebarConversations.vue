@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import type { Conversation } from '../types/chat';
-import { ref } from 'vue'
 
 const response = ref<Conversation[]>([]);
 const params = { excludeFields: ['messages'] }
@@ -9,15 +8,16 @@ const res = await useGetConversationList(params);
 if (res) {
     response.value = res.results;
 }
-
+const id = ref("")
 /*
  * ルーティングパラメータが変更されたときに実行して更新
 */
 const route = useRoute()
-const id = route.params.id || ''
+id.value = String(route.params.id) || ''
 watch(() => route.params, async () => {
     const params = { excludeFields: ['messages'] }
     const res = await useGetConversationList(params);
+    id.value = String(route.params.id) || ''
     if (res) {
         response.value = res.results;
     }

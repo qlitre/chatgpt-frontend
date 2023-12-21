@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import type { Message } from '../types/chat';
+import { parseChunkToJsonArray } from '../utils/parseChunkToJsonArray';
+import { yieldCharWithDelay } from '../utils/yieldCharWithDelay';
 import MarkdownIt from 'markdown-it'
 import hljs from "highlight.js"
 
@@ -15,6 +15,7 @@ const history = ref<Message[]>([]);
 const prompt = ref("")
 // ChatGPTと通信中かどうか
 const isCommunicating = ref(false);
+const loading = ref(false);
 
 const conversationDetail = await useGetConvesationDetail(conversationID);
 if (conversationDetail) {
@@ -26,15 +27,17 @@ if (conversationDetail) {
  */
 async function addPrompt() {
     if (!canSend()) return
-    isCommunicating.value = true
+    history.value.push({ is_bot: false, message: prompt.value })
     const _prompt = prompt.value
     prompt.value = ""
+    loading.value = true;
+    isCommunicating.value = true
     try {
         const response = await useGetStreamChatWithHistory(_prompt, conversationID);
         if (response.body == null) return
-        history.value.push({ is_bot: false, message: _prompt })
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
+        loading.value = false;
         history.value.push({ is_bot: true, message: '' })
         const lstIndex = history.value.length - 1
         while (true) {
@@ -44,34 +47,13 @@ async function addPrompt() {
             }
             const chunk = decoder.decode(value, { stream: true });
             // chunk dataが２つ以上で送られてくる場合があるので、{}で分割する
-            const jsonArr: string[] = []
-            const stack: string[] = []
-            let flg = false
-            for (const s of chunk) {
-                if (s == '{') flg = true
-                if (!flg) continue
-                stack.push(s)
-                if (s == '}') {
-                    jsonArr.push(stack.join(''))
-                    stack.length = 0
-                    flg = false
-                }
+            const jsonArr = parseChunkToJsonArray(chunk)
+            // 1文字ずつ追加する
+            for await (const char of yieldCharWithDelay(jsonArr)) {
+                await new Promise(r => setTimeout(r, 25));
+                history.value[lstIndex].message += char
             }
-            for (const json of jsonArr) {
-                const parsedData = JSON.parse(json);
-                if (parsedData.end_of_stream) {
-                    isCommunicating.value = false
-                    break;
-                }
-                if (parsedData.content) {
-                    // 本番にデプロイするとチャンクが大きくなるので、25msごとに追加する
-                    // 原因は良く分からない
-                    for (const s of parsedData.content) {
-                        await new Promise(r => setTimeout(r, 25));
-                        history.value[lstIndex].message += s
-                    }
-                }
-            }
+            scrollChatWindow()
         }
         // aiのメッセージを保存
         const res = await useAddMessage(conversationID, history.value[lstIndex].message, true)
@@ -109,6 +91,22 @@ const md = new MarkdownIt({
     },
 })
 
+const grab = ref(null)
+const scrollChatWindow = () => {
+    if (grab.value === null) {
+        return;
+    }
+    grab.value.scrollIntoView({ behavior: 'smooth' })
+}
+
+onMounted(() => {
+    window.scrollTo(
+        {
+            top: document.body.scrollHeight,
+        }
+    );
+});
+
 </script>
 
 <template>
@@ -126,6 +124,8 @@ const md = new MarkdownIt({
                 <div v-html="md.render(item.message)" class="md" />
             </v-card>
         </v-container>
+        <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
+            height="6"></v-progress-linear>
         <div class="prompt-box">
             <div class="input-wrapper">
                 <v-textarea class="textarea custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
@@ -136,6 +136,7 @@ const md = new MarkdownIt({
             </div>
         </div>
     </v-container>
+    <div ref="grab" class="w-100"></div>
 </template>
 
 <style scoped lang="scss">

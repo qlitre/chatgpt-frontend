@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { Message } from '../types/chat';
+import { parseChunkToJsonArray } from '../utils/parseChunkToJsonArray';
+import { yieldCharWithDelay } from '../utils/yieldCharWithDelay';
 import MarkdownIt from 'markdown-it'
 import hljs from "highlight.js"
 
-import type { Message } from '../types/chat';
 import { ref } from 'vue'
 
 const history = ref<Message[]>([]);
@@ -16,18 +18,19 @@ const isCommunicating = ref(false);
  */
 async function addPrompt() {
     if (!canSend()) return
-    isCommunicating.value = true
+    history.value.push({ is_bot: false, message: prompt.value })
     const _prompt = prompt.value
     prompt.value = ""
+    loading.value = true;
+    isCommunicating.value = true
     // streamする
     try {
         const response = await useGetStreamChat(_prompt);
         if (response.body == null) return
-        history.value.push({ is_bot: false, message: _prompt })
+        loading.value = false;
         history.value.push({ is_bot: true, message: '' })
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
-        loading.value = false;
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
@@ -35,45 +38,23 @@ async function addPrompt() {
             }
             const chunk = decoder.decode(value, { stream: true });
             // chunk dataが２つ以上で送られてくる場合があるので、{}で分割する
-            const jsonArr: string[] = []
-            const stack: string[] = []
-            let flg = false
-            for (const s of chunk) {
-                if (s == '{') flg = true
-                if (!flg) continue
-                stack.push(s)
-                if (s == '}') {
-                    jsonArr.push(stack.join(''))
-                    stack.length = 0
-                    flg = false
-                }
+            const jsonArr = parseChunkToJsonArray(chunk)
+            // 1文字ずつ追加する
+            for await (const char of yieldCharWithDelay(jsonArr)) {
+                await new Promise(r => setTimeout(r, 25));
+                history.value[1].message += char
             }
-            for (const json of jsonArr) {
-                const parsedData = JSON.parse(json);
-                if (parsedData.end_of_stream) {
-                    isCommunicating.value = false
-                    break;
-                }
-                if (parsedData.content) {
-                    // 本番にデプロイするとチャンクが大きくなるので、25msごとに追加する
-                    // 原因は良く分からない
-                    for (const s of parsedData.content) {
-                        await new Promise(r => setTimeout(r, 25));
-                        history.value[1].message += s
-                    }
-                }
-            }
+            scrollChatWindow()
         }
         isCommunicating.value = false
         const res = await useAddConversation(_prompt, history.value[1].message)
         if (res.data) {
-            const newTopicId = res.data.conversation.id
+            const newTopicId = res.data.id
             navigateTo(`/chat/conversation/${newTopicId}`);
         }
     } catch (error) {
         console.error('Error fetching data:', error);
     }
-
 }
 
 /**
@@ -105,12 +86,19 @@ function handleEnterPress(event: KeyboardEvent) {
         event.preventDefault();
     }
 }
+const grab = ref(null)
+const scrollChatWindow = () => {
+    if (grab.value === null) {
+        return;
+    }
+    grab.value.scrollIntoView({ behavior: 'smooth' })
+}
 
 </script>
 
 <template>
     <v-container class="top-container">
-        <v-container class="pa-4 justify-center" v-for="item in history" :key="item.id">
+        <v-container class="pa-4 justify-center " v-for="item in history" :key="item.id">
             <v-card class="pt-4">
                 <div class="chip">
                     <v-chip prepend-icon="lightbulb_outline" v-if="item.is_bot" color="green" text-color="white">
@@ -123,7 +111,8 @@ function handleEnterPress(event: KeyboardEvent) {
                 <div v-html="md.render(item.message)" class="md" />
             </v-card>
         </v-container>
-
+        <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
+            height="6"></v-progress-linear>
         <div class="prompt-box">
             <div class="input-wrapper">
                 <v-textarea class="textarea custom-textarea" v-model="prompt" auto-grow placeholder="メッセージを送信" rows="2"
@@ -134,6 +123,7 @@ function handleEnterPress(event: KeyboardEvent) {
             </div>
         </div>
     </v-container>
+    <div ref="grab" class="w-100"></div>
 </template>
 
 <style scoped lang="scss">
