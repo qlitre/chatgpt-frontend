@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import type { Message } from '../types/chat';
 import { parseChunkToJsonArray } from '../utils/parseChunkToJsonArray';
 import { yieldCharWithDelay } from '../utils/yieldCharWithDelay';

@@ -16,9 +16,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const authStore = useAuthStore()
     const userStore = useUserStore()
     const csrfToken = useCookie('csrftoken')
+    const authToken = getauthToken()
+    if (!authToken) {
+        console.log("No auth token found, redirecting to login")
+        return navigateTo("/account/login", { replace: true });
+    }
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${getauthToken()}`
+        'Authorization': `Token ${authToken}`
     };
     if (csrfToken?.value) {
         headers['X-CSRFToken'] = csrfToken.value;
