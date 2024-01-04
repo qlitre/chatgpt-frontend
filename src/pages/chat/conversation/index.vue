@@ -47,7 +47,7 @@ watch(() => route.query, () => location.reload())
         </div>
         <v-row class="mt-8">
             <v-col cols="12" sm="6" md="6" v-for="conv in response?.results" :key="conv.id">
-                <v-card class="mx-auto" height="150" max-width="540" variant="outlined" color="indigo"
+                <v-card class="mx-auto" height="150" max-width="540" variant="outlined"
                     :href="`/chat/conversation/${conv.id}`">
                     <v-card-title>
                         {{ conv.topic }}
@@ -55,6 +55,7 @@ watch(() => route.query, () => location.reload())
                     <v-card-subtitle>
                         {{ conv.created_at }}
                     </v-card-subtitle>
+                    <v-divider class="mx-4 mb-1"></v-divider>
                     <v-card-text>
                         {{ recentMsg[conv.id] }}
                     </v-card-text>

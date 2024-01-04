@@ -17,7 +17,6 @@ const email = ref('');
 const errorMessage = ref<string[]>([])
 
 const submitLoginForm = async () => {
-
   const formData = {
     email: email.value,
     password: password.value,
@@ -76,5 +75,6 @@ const submitLoginForm = async () => {
         <li v-for="message in errorMessage" :key="message">{{ message }}</li>
       </ul>
     </v-alert>
+
   </div>
 </template>

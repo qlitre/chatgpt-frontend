@@ -40,6 +40,5 @@ watch(() => route.params, async () => {
 <style scoped>
 .active {
     background-color: #E8EAF6;
-
 }
 </style>

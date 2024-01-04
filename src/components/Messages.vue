@@ -2,8 +2,7 @@
 import type { Message } from '../types/chat';
 import { parseChunkToJsonArray } from '../utils/parseChunkToJsonArray';
 import { yieldCharWithDelay } from '../utils/yieldCharWithDelay';
-import MarkdownIt from 'markdown-it'
-import hljs from "highlight.js"
+import { mdRenderer } from '../utils/mdRenderer';
 
 import { ref } from 'vue'
 
@@ -68,13 +67,6 @@ function canSend() {
 }
 
 
-const md = new MarkdownIt({
-    linkify: true,
-    highlight(code: string, lang: string) {
-        const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-        return `<pre class="hljs-code-container"><div class="hljs-code-header d-flex align-center justify-space-between bg-grey-darken-3 pa-1"><span class="pl-2 text-caption">${language}</span></div><code class="hljs language-${language}">${hljs.highlight(code, { language: language, ignoreIllegals: true }).value}</code></pre>`
-    },
-})
 
 /**
  * Enterキーが単体で押されたときにチャットメッセージを送信
@@ -108,7 +100,7 @@ const scrollChatWindow = () => {
                         # Your Prompt
                     </v-chip>
                 </div>
-                <div v-html="md.render(item.message)" class="md" />
+                <div v-html="mdRenderer(item.message)" class="md" />
             </v-card>
         </v-container>
         <v-progress-linear v-if="loading" class="mt-4" color="deep-purple-accent-4" indeterminate rounded
@@ -127,6 +119,8 @@ const scrollChatWindow = () => {
 </template>
 
 <style scoped lang="scss">
+@import '../assets/scss/md.scss';
+
 .top-container {
     position: relative;
 }
@@ -161,124 +155,4 @@ const scrollChatWindow = () => {
     padding: 0 4%;
 }
 
-.md {
-    padding: 2% 4%;
-
-    :deep(*) {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        line-height: 1.7;
-        font-size: 1rem;
-    }
-
-    :deep(p) {
-        line-height: 1.7;
-        white-space: pre-wrap;
-
-        +p {
-            margin-top: 8px;
-        }
-    }
-
-    :deep(img) {
-        display: block;
-        max-width: 100%;
-        margin-top: 20px;
-        margin-bottom: 0px;
-        height: auto;
-        border: solid 1px #ccc;
-    }
-
-    :deep(strong) {
-        background-color: yellow;
-    }
-
-    :deep(p) code,
-    :deep(li) code {
-        padding-left: 4px;
-        padding-right: 4px;
-        border-radius: 4px;
-        margin: 0 4px;
-        background-color: #E2E8F0;
-        color: #1A202C;
-        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 0.875rem;
-        display: inline-block;
-    }
-
-    :deep(pre) * {
-        line-height: 1.6;
-        font-weight: normal;
-        font-size: 0.875rem;
-        margin-bottom: 0;
-        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
-
-    :deep(.toolbar-item) {
-        font-size: 0.875rem;
-    }
-
-    :deep(blockquote) {
-        margin: 1.5rem 0;
-        padding-left: 15px;
-        border-left: 2px solid #CBD5E0;
-        border-radius: 2px;
-        color: #718096;
-    }
-
-    :deep(h1):deep(h2),
-    :deep(h3) {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-
-    }
-
-    :deep(a) {
-        color: #1266f1;
-
-        :hover {
-            opacity: .5;
-        }
-    }
-
-    :deep(ul),
-    :deep(ol) {
-        padding-left: 1.5rem;
-        margin: 1rem 0;
-        line-height: 1.7;
-
-        li {
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-    }
-
-    :deep(ul) {
-        list-style-type: disc;
-    }
-
-    :deep(ol) {
-        list-style-type: decimal;
-    }
-
-    :deep(table) {
-        width: 100%;
-        border-collapse: collapse;
-        border-radius: .5rem;
-
-        th,
-        td {
-            padding: .5rem 1rem;
-            border: 1px solid gray;
-        }
-    }
-}
-
-@media (max-width: 1024px) {
-    .md:deep(img) {
-        max-width: 100%;
-    }
-}
 </style>

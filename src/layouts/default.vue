@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const model = useModel()
+</script>
+
 <template>
   <div>
     <v-app class="bg-blue-grey-lighten-5">
